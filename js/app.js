@@ -32,7 +32,7 @@ class Board {
         let square = new Square(r, c)
         newRow.push(square)
         if ([4,5].includes(r) && [4,5].includes(c)){
-          r === c ? square.addPiece(new Piece(r, c, 'White')) : square.addPiece(new Piece(r, c, 'Black'))
+          r === c ? square.addPiece(new Piece(r, c, 'white')) : square.addPiece(new Piece(r, c, 'black'))
           square.isOccupied = true
         }
       }
@@ -61,6 +61,11 @@ function setBoard(gameBoard) {
       squareEl.className = `board-square ${square.isEdge? 'edge' : 'not-edge'}`
       squareEl.id = `${square.r},${square.c}`
       boardEl.appendChild(squareEl)
+      if (square.isOccupied) {
+        let pieceEl = document.createElement('div')
+        pieceEl.className = `piece ${square.piece.color}`
+        squareEl.appendChild(pieceEl)
+      }
     })
   })
 }
