@@ -12,7 +12,7 @@ html {
 }
 
 body {
-  background-color: rgb(194, 219, 186);
+  background-color: rgb(200, 200, 200);
 /* Use a system font, if none are available use an available sans-sarif   font */
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -62,4 +62,12 @@ body {
   border: 1px solid black;
   text-align: center;
   vertical-align: middle;
+}
+
+.edge {
+  background-color: rgb(103, 10, 10);
+}
+
+.not-edge {
+  background-color: rgb(1, 71, 3);
 }
