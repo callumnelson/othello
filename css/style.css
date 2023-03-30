@@ -21,6 +21,20 @@ body {
   flex-direction: column;
 }
 
+button {
+  border-radius: 8px;
+  border: none;
+  padding: 8px;
+  background-color: rgb(83, 83, 83);
+  color: white;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: rgb(142, 182, 200);
+  color: black;
+}
+
 #header-wrapper {
   display: flex;
   flex-direction: column;
