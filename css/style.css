@@ -45,6 +45,18 @@ body {
   display: flex;
   justify-content: space-evenly;
   margin: 16px 16px;
+  align-items: center;
+}
+
+#score-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+#message-wrapper {
+  display: flex;
+  justify-content: center;
 }
 
 #game-wrapper {
