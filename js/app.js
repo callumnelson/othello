@@ -113,9 +113,11 @@ function updateBoard(gameBoard) {
 }
 
 function init() {
+  //These should go in pairs => update state, render state
   board.initializeBoard()
-  console.log(board.gameBoard)
   showBoard(board.gameBoard)
+  console.log(board.gameBoard)  
+  scorekeeper.setMessage()
   showMessage(scorekeeper.statusMessage)
 }
 
