@@ -6,6 +6,7 @@ class Square {
     this.isEdge = !(this.r%9) || !(this.c%9) ? true : false
     this.isOccupied = false
     this.piece = undefined
+    this.sandwichDirs = []
   }
   addPiece(piece) {
     this.piece = piece
@@ -58,6 +59,7 @@ class Board {
     this.numPieces = 4
     this.gameBoard = []
     this.availableMoves = []
+    this.directions = [[-1,-1], [-1,0], [-1,1], [0, -1], [0,1], [1,-1], [1, 0], [1,1]]
   }
   initializeBoard() {
     //Create a 10x10 board with a 1x10 border around the edge
@@ -83,11 +85,12 @@ class Board {
       row.forEach(square => {
         //If this square is not an edge square
         if (!square.isEdge){
+          //Reset the square's sandwiches before finding new ones
+          square.sandwichDirs = []
           //If the square is occupied and the color of the current turn
           if (square.isOccupied && square.piece.color === turn){
-            //call our check direction function recursively on each direction
-            for (let i=0; i<directions.length; i++) {
-              let dir = directions[i]
+            //call our check direction function on each direction
+            this.directions.forEach( dir => {
               let newRow = square.r + dir[0]
               let newCol = square.c + dir[1]
               let nextSquare = this.gameBoard[newRow][newCol]
@@ -97,9 +100,11 @@ class Board {
                 //Keep going until we have all the valid moves
                 if (possibleMove){
                   moves.push(possibleMove)
+                  //We need to flip the direction for when we use this to flip pieces because we'll be placing the piece on the avalable square and flipping in the opposite direction that we're checking for an available move
+                  possibleMove.sandwichDirs.push(dir.map(d => d * -1))
                 }
               }
-            }
+            })
           }
         }
       })
@@ -123,12 +128,32 @@ class Board {
       this.checkForSandwich(toCheckSquare, dir, turn)
     }
   }
+
+  flipPieces(square, turn){
+    square.sandwichDirs.forEach( sDir => {
+      let toFlipR = square.r + sDir[0]
+      let toFlipC = square.c + sDir[1]
+      let toFlipSq = this.gameBoard[toFlipR][toFlipC]
+      this.flipOneDirection(toFlipSq, sDir, turn)
+    })
+  }
+
+  flipOneDirection(square, dir, turn){
+    square.piece.color = turn === 'white' ? 'white' : 'black'
+    let newRow = square.r + dir[0]
+    let newCol = square.c + dir[1]
+    let nextSquare = this.gameBoard[newRow][newCol]
+    //We don't need to check all the conditions because we know there's a sandwich
+    //If the next square is our color, we're done
+    if (nextSquare.piece.color === turn) return
+    //Otherwise call flip pieces recursively on the next square
+    else this.flipPieces(nextSquare, dir, turn)
+  }
 }
 
 /*-------------------------------- Constants --------------------------------*/
 const board = new Board()
 const scorekeeper = new Scorekeeper()
-const directions = [[-1,-1], [-1,0], [-1,1], [0, -1], [0,1], [1,-1], [1, 0], [1,1]]
 
 /*---------------------------- Variables (state) ----------------------------*/
 
@@ -160,9 +185,8 @@ function createBoard(gameBoard) {
   })
 }
 
-function renderAvailableMoves(moves) {
-  //TODO loop through board and clear background before rendering next set of moves
-  board.gameBoard.forEach( row => {
+function renderBoard(gameBoard, moves) {
+  gameBoard.forEach( row => {
     row.forEach( square => {
       let sqElId = `${square.r},${square.c}`
       let sqEl = document.getElementById(sqElId)
@@ -180,10 +204,6 @@ function renderMessage(message){
   messageEl.textContent = message
 }
 
-function renderBoard(gameBoard) {
-  //TODO update the board styling based on the gameBoard that is passed
-}
-
 function handleSquareClick(evt){
   let clickedEl = evt.target
   //Only handle the click if they clicked on an available square
@@ -191,14 +211,15 @@ function handleSquareClick(evt){
     let sqCoords = clickedEl.id.split(',')
     let r = sqCoords[0]
     let c = sqCoords[1]
-    let squareClicked = board.gameBoard[r][c]
-    let newPiece = new Piece(squareClicked.r, squareClicked.c, scorekeeper.turn)
-    squareClicked.addPiece(newPiece)
-    //TODO
-      //Flip pieces
-      //Check game over (winner, tie, etc.)
-      //Switch turns
-      //Render
+    let clickedSquare = board.gameBoard[r][c]
+    let newPiece = new Piece(clickedSquare.r, clickedSquare.c, scorekeeper.turn)
+    clickedSquare.addPiece(newPiece)
+    //Flip the pieces around the clicked square
+    board.flipPieces(clickedSquare, clickedSquare.sandwichDirs)
+    //Check game over (winner, tie, etc.)
+    //Switch turns
+    //Check available
+    //Render
   }
 }
 
@@ -212,11 +233,11 @@ function init() {
   renderMessage(scorekeeper.statusMessage)
   //Find available moves and display
   board.getAvailableMoves(scorekeeper.turn)
-  renderAvailableMoves(board.availableMoves)
+  renderBoard(board.gameBoard, board.availableMoves)
 }
 
 function render(){
-  updateBoard(board.gameBoard)
+  renderBoard(board.gameBoard)
   renderMessage(scorekeeper.statusMessage)
 }
 

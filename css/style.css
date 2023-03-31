@@ -111,8 +111,8 @@ button:hover {
 
 .piece {
   border-radius: 50%;
-  width: 6.5vmin;
-  height: 6.5vmin;
+  width: 6vmin;
+  height: 6vmin;
   border: none;
 }
 
