@@ -64,9 +64,12 @@ class Scorekeeper {
     this.whiteScore = wScore
     this.numPieces = nPieces
   }
-  checkGameOver(board){
+  checkGameOver(gameBoard){
     //TODO figure out all conditions
     if(board.numPieces === 64) this.gameOver = true
+  }
+  endGame(){
+    this.gameOver = true
   }
 }
 
@@ -86,7 +89,7 @@ class Board {
         newRow.push(square)
         //If the r,c pair is the middle four squares, add a piece to the square
         if ([4,5].includes(r) && [4,5].includes(c)){
-          r === c ? square.addPiece(new Piece(r, c, 'white')) : square.addPiece(new Piece(r, c, 'black'))
+          r === c ? square.addPiece(new Piece(r, c, 'black')) : square.addPiece(new Piece(r, c, 'white'))
           square.isOccupied = true
         }
       }
@@ -267,9 +270,22 @@ function handleSquareClick(evt){
     scorekeeper.switchTurn()
     scorekeeper.setMessage()
     board.getAvailableMoves(scorekeeper.turn)
-    renderBoard(board.gameBoard, board.availableMoves)
-    renderMessage(scorekeeper.statusMessage)
-    renderScore(scorekeeper.blackScore, scorekeeper.whiteScore)
+    //If there are no moves, switch turns and call getAvailableMoves again
+    //TODO refactor this code into scorekeeper class
+    if (!board.availableMoves.length){
+      scorekeeper.switchTurn()
+      scorekeeper.setMessage()
+      board.getAvailableMoves(scorekeeper.turn)
+      //if there are still no available moves, the game is over
+      if (!board.availableMoves.length){
+        scorekeeper.endGame()
+        scorekeeper.setMessage()
+      }
+    }else {
+      renderBoard(board.gameBoard, board.availableMoves)
+      renderMessage(scorekeeper.statusMessage)
+      renderScore(scorekeeper.blackScore, scorekeeper.whiteScore)
+    }
   }
 }
 
