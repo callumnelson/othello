@@ -24,9 +24,9 @@ class Piece {
 
 class Scorekeeper {
   constructor(){
-    this.blackScore = 2
-    this.whiteScore = 2
-    this.numPieces = 4
+    this.blackScore = 0
+    this.whiteScore = 0
+    this.numPieces = 0
     this.turn = 'black'
     this.gameOver = false
     this.statusMessage = `Black's move!`
@@ -48,14 +48,21 @@ class Scorekeeper {
     }
   }
   updateScore(board){
+    let bScore = 0
+    let wScore = 0
+    let nPieces = 0
+    //TODO turn this into reduce with an object for each score + total
     board.gameBoard.forEach( row => {
       row.forEach( square => {
         if (square.isOccupied){
-          square.piece.color === 'black' ? this.blackScore += 1 : this.whiteScore += 1
-          this.numPieces += 1
+          square.piece.color === 'black' ? bScore += 1 : wScore += 1
+          nPieces += 1
         } 
       })
     })
+    this.blackScore = bScore
+    this.whiteScore = wScore
+    this.numPieces = nPieces
   }
   checkGameOver(board){
     //TODO figure out all conditions
@@ -177,6 +184,8 @@ const scorekeeper = new Scorekeeper()
 /*------------------------ Cached Element References ------------------------*/
 const boardEl = document.getElementById('board')
 const messageEl = document.getElementById('message')
+const blackScoreEl = document.getElementById('black-score')
+const whiteScoreEl = document.getElementById('white-score')
 
 /*----------------------------- Event Listeners -----------------------------*/
 
@@ -235,8 +244,9 @@ function renderMessage(message){
   messageEl.textContent = message
 }
 
-function renderScore(score){
-  //TODO update score
+function renderScore(blackScore, whiteScore){
+  blackScoreEl.textContent = `Black: ${blackScore}`
+  whiteScoreEl.textContent = `White: ${whiteScore}`
 }
 
 function handleSquareClick(evt){
@@ -259,6 +269,7 @@ function handleSquareClick(evt){
     board.getAvailableMoves(scorekeeper.turn)
     renderBoard(board.gameBoard, board.availableMoves)
     renderMessage(scorekeeper.statusMessage)
+    renderScore(scorekeeper.blackScore, scorekeeper.whiteScore)
   }
 }
 
@@ -278,6 +289,7 @@ function init() {
 function render(){
   renderBoard(board.gameBoard)
   renderMessage(scorekeeper.statusMessage)
+  renderScore(scorekeeper.blackScore, scorekeeper.whiteScore)
 }
 
 init()
