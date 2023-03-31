@@ -91,12 +91,19 @@ class Board {
     console.log(`Getting ${scorekeeper.turn}'s moves`)
     //Return an array of those moves so that we can highlight them on the board
     let moves = []
+    
+    //Reset sandwichDirs for all squares first 
+    //Need to do this outside loop below because otherwise the dirs get cleared after valid moves have been added
+    this.gameBoard.forEach(row => {
+      row.forEach(square => { 
+        square.sandwichDirs = []
+      })
+    })
+
     this.gameBoard.forEach(row => {
       row.forEach(square => {
         //If this square is not an edge square
         if (!square.isEdge){
-          //Reset the square's sandwiches before finding new ones
-          square.sandwichDirs = []
           //If the square is occupied and the color of the current turn
           if (square.isOccupied && square.piece.color === turn){
             //call our check direction function on each direction
@@ -231,6 +238,10 @@ function renderBoard(gameBoard, moves) {
 
 function renderMessage(message){
   messageEl.textContent = message
+}
+
+function renderScore(score){
+  //TODO update score
 }
 
 function handleSquareClick(evt){
