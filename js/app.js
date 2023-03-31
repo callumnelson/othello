@@ -26,15 +26,13 @@ class Scorekeeper {
   constructor(){
     this.blackScore = 2
     this.whiteScore = 2
+    this.numPieces = 4
     this.turn = 'black'
     this.gameOver = false
     this.statusMessage = `Black's move!`
   }
   switchTurn(){
     this.turn === 'black' ? this.turn = 'white' : this.turn = 'black'
-  }
-  endGame(){
-    this.gameOver = true
   }
   setMessage(){
     //If the game is not over, update the status message for whose turn it is next
@@ -49,8 +47,19 @@ class Scorekeeper {
       }
     }
   }
-  setScore(){
-    //TODO count # of pieces each color has on the board and update scores
+  updateScore(board){
+    board.gameBoard.forEach( row => {
+      row.forEach( square => {
+        if (square.isOccupied){
+          square.piece.color === 'black' ? this.blackScore += 1 : this.whiteScore += 1
+          this.numPieces += 1
+        } 
+      })
+    })
+  }
+  checkGameOver(board){
+    //TODO figure out all conditions
+    if(board.numPieces === 64) this.gameOver = true
   }
 }
 
@@ -79,6 +88,7 @@ class Board {
     }
   }
   getAvailableMoves(turn) {
+    console.log(`Getting ${scorekeeper.turn}'s moves`)
     //Return an array of those moves so that we can highlight them on the board
     let moves = []
     this.gameBoard.forEach(row => {
@@ -115,7 +125,7 @@ class Board {
     //We know we're receiving a square that is the opposite color of turn
     //We want to check the status of the next square in direction dir
     let toCheckRow = square.r + dir[0]
-    let toCheckCol = square.r + dir[1]
+    let toCheckCol = square.c + dir[1]
     let toCheckSquare = this.gameBoard[toCheckRow][toCheckCol]
     //If it's an edge, then we can't play this move
     if (toCheckSquare.isEdge) return undefined
@@ -124,9 +134,7 @@ class Board {
     //If the checkSquare is our color, we already have a sandwich 
     else if (toCheckSquare.piece.color === turn) return undefined
     //Otherwise we found another of their pieces and we need to keep checking
-    else {
-      this.checkForSandwich(toCheckSquare, dir, turn)
-    }
+    else this.checkForSandwich(toCheckSquare, dir, turn)
   }
 
   flipPieces(square, turn){
@@ -139,15 +147,17 @@ class Board {
   }
 
   flipOneDirection(square, dir, turn){
+    console.log('The first piece to flip is: ', square)
     square.piece.color = turn === 'white' ? 'white' : 'black'
     let newRow = square.r + dir[0]
     let newCol = square.c + dir[1]
     let nextSquare = this.gameBoard[newRow][newCol]
+    console.log('The next piece to flip is: ', nextSquare)
     //We don't need to check all the conditions because we know there's a sandwich
     //If the next square is our color, we're done
     if (nextSquare.piece.color === turn) return
     //Otherwise call flip pieces recursively on the next square
-    else this.flipPieces(nextSquare, dir, turn)
+    else this.flipOneDirection(nextSquare, dir, turn)
   }
 }
 
@@ -186,6 +196,10 @@ function createBoard(gameBoard) {
 }
 
 function renderBoard(gameBoard, moves) {
+  //TODO 
+    //Go through the board
+    //Set available if available
+    //Add pieces where there are pieces if there isn't already a piece
   gameBoard.forEach( row => {
     row.forEach( square => {
       let sqElId = `${square.r},${square.c}`
@@ -196,6 +210,21 @@ function renderBoard(gameBoard, moves) {
       } else {
         sqEl.classList.remove('available')
       }
+      //If the square has a piece element
+      if (square.isOccupied){
+        //If that element is already represented graphically, make sure it's the right color
+        if (sqEl.childElementCount){
+          let pieceEl = sqEl.childNodes[0]
+          pieceEl.classList.remove('black')
+          pieceEl.classList.remove('white')
+          pieceEl.classList.add(square.piece.color)
+        //Otherwise create a new piece and add it to the dom
+        } else {
+          let newPieceEl = document.createElement('div')
+          newPieceEl.className = `piece ${square.piece.color}`
+          sqEl.appendChild(newPieceEl)
+        }
+      } 
     })
   })
 }
@@ -215,11 +244,15 @@ function handleSquareClick(evt){
     let newPiece = new Piece(clickedSquare.r, clickedSquare.c, scorekeeper.turn)
     clickedSquare.addPiece(newPiece)
     //Flip the pieces around the clicked square
-    board.flipPieces(clickedSquare, clickedSquare.sandwichDirs)
-    //Check game over (winner, tie, etc.)
-    //Switch turns
-    //Check available
-    //Render
+    console.log('You clicked: ', clickedSquare)
+    board.flipPieces(clickedSquare, scorekeeper.turn)
+    scorekeeper.updateScore(board)
+    scorekeeper.checkGameOver(board)
+    scorekeeper.switchTurn()
+    scorekeeper.setMessage()
+    board.getAvailableMoves(scorekeeper.turn)
+    renderBoard(board.gameBoard, board.availableMoves)
+    renderMessage(scorekeeper.statusMessage)
   }
 }
 
@@ -242,6 +275,9 @@ function render(){
 }
 
 init()
+
+//TODO take params out of most functions since they already have global access to variables
+  //e.g. render board has access to the board since it's global
 
 
 //Notes
