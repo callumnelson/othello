@@ -139,9 +139,9 @@ class Board {
     //If the checkSquare is unoccupied, we've found a move!
     else if (!toCheckSquare.isOccupied) return toCheckSquare
     //If the checkSquare is our color, we already have a sandwich 
-    else if (toCheckSquare.piece.color === turn) return undefined
+    else if (toCheckSquare.piece.color === turn) return undefined  
     //Otherwise we found another of their pieces and we need to keep checking
-    else this.checkForSandwich(toCheckSquare, dir, turn)
+    else return this.checkForSandwich(toCheckSquare, dir, turn)
   }
 
   flipPieces(square, turn){
@@ -154,17 +154,15 @@ class Board {
   }
 
   flipOneDirection(square, dir, turn){
-    console.log('The first piece to flip is: ', square)
     square.piece.color = turn === 'white' ? 'white' : 'black'
     let newRow = square.r + dir[0]
     let newCol = square.c + dir[1]
     let nextSquare = this.gameBoard[newRow][newCol]
-    console.log('The next piece to flip is: ', nextSquare)
     //We don't need to check all the conditions because we know there's a sandwich
     //If the next square is our color, we're done
     if (nextSquare.piece.color === turn) return
     //Otherwise call flip pieces recursively on the next square
-    else this.flipOneDirection(nextSquare, dir, turn)
+    else return this.flipOneDirection(nextSquare, dir, turn)
   }
 }
 
@@ -203,10 +201,6 @@ function createBoard(gameBoard) {
 }
 
 function renderBoard(gameBoard, moves) {
-  //TODO 
-    //Go through the board
-    //Set available if available
-    //Add pieces where there are pieces if there isn't already a piece
   gameBoard.forEach( row => {
     row.forEach( square => {
       let sqElId = `${square.r},${square.c}`
@@ -214,7 +208,8 @@ function renderBoard(gameBoard, moves) {
       //If the square is in the available moves and isn't already highlighted then add the available class, otherwise remove available tag if it exists
       if (moves.includes(square) && !sqEl.classList.contains('available')) {
         sqEl.classList.add('available')
-      } else {
+      //Remove the available class if it's not a move
+      } else if (!moves.includes(square)){
         sqEl.classList.remove('available')
       }
       //If the square has a piece element
