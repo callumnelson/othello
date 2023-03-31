@@ -9,6 +9,7 @@ class Square {
   }
   addPiece(piece) {
     this.piece = piece
+    this.isOccupied = true
   }
 }
 
@@ -139,11 +140,11 @@ const messageEl = document.getElementById('message')
 
 /*----------------------------- Event Listeners -----------------------------*/
 
-
+boardEl.addEventListener('click', handleSquareClick)
 
 /*-------------------------------- Functions --------------------------------*/
 
-function renderBoard(gameBoard) {
+function createBoard(gameBoard) {
   gameBoard.forEach(row => {
     row.forEach(square => {
       let squareEl = document.createElement('div')
@@ -179,28 +180,44 @@ function renderMessage(message){
   messageEl.textContent = message
 }
 
-function updateBoard(gameBoard) {
+function renderBoard(gameBoard) {
   //TODO update the board styling based on the gameBoard that is passed
+}
+
+function handleSquareClick(evt){
+  let clickedEl = evt.target
+  //Only handle the click if they clicked on an available square
+  if(clickedEl.classList.contains('available')){
+    let sqCoords = clickedEl.id.split(',')
+    let r = sqCoords[0]
+    let c = sqCoords[1]
+    let squareClicked = board.gameBoard[r][c]
+    let newPiece = new Piece(squareClicked.r, squareClicked.c, scorekeeper.turn)
+    squareClicked.addPiece(newPiece)
+    //TODO
+      //Flip pieces
+      //Check game over (winner, tie, etc.)
+      //Switch turns
+      //Render
+  }
 }
 
 function init() {
   //These should go in pairs => update state, render state
   //Create game board and render
   board.initializeBoard()
-  renderBoard(board.gameBoard)
+  createBoard(board.gameBoard)
   //Create scorekeeper and render first move message
   scorekeeper.setMessage()
   renderMessage(scorekeeper.statusMessage)
   //Find available moves and display
   board.getAvailableMoves(scorekeeper.turn)
   renderAvailableMoves(board.availableMoves)
-  
-
-
 }
 
 function render(){
   updateBoard(board.gameBoard)
+  renderMessage(scorekeeper.statusMessage)
 }
 
 init()
