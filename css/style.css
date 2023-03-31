@@ -80,8 +80,8 @@ button:hover {
 
 #board {
   display: grid;
-  grid-template-rows: repeat(10, 7.5vmin);
-  grid-template-columns: repeat(10, 7.5vmin);
+  grid-template-rows: repeat(10, 7vmin);
+  grid-template-columns: repeat(10, 7vmin);
 }
 
 .board-square {
@@ -101,10 +101,18 @@ button:hover {
   background-color: rgb(1, 71, 3);
 }
 
+.available {
+  background-color: rgba(190, 190, 190, 0.1);
+}
+
+.available:hover {
+  cursor: pointer;
+}
+
 .piece {
   border-radius: 50%;
-  width: 7vmin;
-  height: 7vmin;
+  width: 6.5vmin;
+  height: 6.5vmin;
   border: none;
 }
 

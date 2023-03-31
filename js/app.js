@@ -10,9 +10,6 @@ class Square {
   addPiece(piece) {
     this.piece = piece
   }
-  setNeighbors(){
-    //TODO set the square's neighbors so we can access them when identifying moves
-  }
 }
 
 class Piece {
@@ -79,7 +76,6 @@ class Board {
     }
   }
   getAvailableMoves(turn) {
-    //TODO given the current player's turn, identify the available moves
     //Return an array of those moves so that we can highlight them on the board
     let moves = []
     this.gameBoard.forEach(row => {
@@ -165,10 +161,17 @@ function renderBoard(gameBoard) {
 
 function renderAvailableMoves(moves) {
   //TODO loop through board and clear background before rendering next set of moves
-  //TODO make this an appended class so that we can style hovering and other such things
-  moves.forEach(square => {
-    let availableSquareEl = document.getElementById(`${square.r},${square.c}`)
-    availableSquareEl.style.backgroundColor = 'lightgray'
+  board.gameBoard.forEach( row => {
+    row.forEach( square => {
+      let sqElId = `${square.r},${square.c}`
+      let sqEl = document.getElementById(sqElId)
+      //If the square is in the available moves and isn't already highlighted then add the available class, otherwise remove available tag if it exists
+      if (moves.includes(square) && !sqEl.classList.contains('available')) {
+        sqEl.classList.add('available')
+      } else {
+        sqEl.classList.remove('available')
+      }
+    })
   })
 }
 
