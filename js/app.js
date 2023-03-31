@@ -47,12 +47,12 @@ class Scorekeeper {
       }
     }
   }
-  updateScore(board){
+  updateScore(gameBoard){
     let bScore = 0
     let wScore = 0
     let nPieces = 0
     //TODO turn this into reduce with an object for each score + total
-    board.gameBoard.forEach( row => {
+    gameBoard.forEach( row => {
       row.forEach( square => {
         if (square.isOccupied){
           square.piece.color === 'black' ? bScore += 1 : wScore += 1
@@ -72,7 +72,6 @@ class Scorekeeper {
 
 class Board {
   constructor() {
-    this.numPieces = 4
     this.gameBoard = []
     this.availableMoves = []
     this.directions = [[-1,-1], [-1,0], [-1,1], [0, -1], [0,1], [1,-1], [1, 0], [1,1]]
@@ -95,10 +94,8 @@ class Board {
     }
   }
   getAvailableMoves(turn) {
-    console.log(`Getting ${scorekeeper.turn}'s moves`)
     //Return an array of those moves so that we can highlight them on the board
     let moves = []
-    
     //Reset sandwichDirs for all squares first 
     //Need to do this outside loop below because otherwise the dirs get cleared after valid moves have been added
     this.gameBoard.forEach(row => {
@@ -174,11 +171,12 @@ class Board {
 }
 
 /*-------------------------------- Constants --------------------------------*/
-const board = new Board()
-const scorekeeper = new Scorekeeper()
+
+
 
 /*---------------------------- Variables (state) ----------------------------*/
-
+let board = new Board()
+let scorekeeper = new Scorekeeper()
 
 
 /*------------------------ Cached Element References ------------------------*/
@@ -186,10 +184,13 @@ const boardEl = document.getElementById('board')
 const messageEl = document.getElementById('message')
 const blackScoreEl = document.getElementById('black-score')
 const whiteScoreEl = document.getElementById('white-score')
+const resetBtnEl = document.getElementById('reset-button')
+
 
 /*----------------------------- Event Listeners -----------------------------*/
 
 boardEl.addEventListener('click', handleSquareClick)
+resetBtnEl.addEventListener('click', resetGame)
 
 /*-------------------------------- Functions --------------------------------*/
 
@@ -260,9 +261,8 @@ function handleSquareClick(evt){
     let newPiece = new Piece(clickedSquare.r, clickedSquare.c, scorekeeper.turn)
     clickedSquare.addPiece(newPiece)
     //Flip the pieces around the clicked square
-    console.log('You clicked: ', clickedSquare)
     board.flipPieces(clickedSquare, scorekeeper.turn)
-    scorekeeper.updateScore(board)
+    scorekeeper.updateScore(board.gameBoard)
     scorekeeper.checkGameOver(board)
     scorekeeper.switchTurn()
     scorekeeper.setMessage()
@@ -273,6 +273,15 @@ function handleSquareClick(evt){
   }
 }
 
+function resetGame(){
+  while (boardEl.firstChild) {
+    boardEl.removeChild(boardEl.firstChild);
+  }
+  board = new Board()
+  scorekeeper = new Scorekeeper()
+  init()
+}
+
 function init() {
   //These should go in pairs => update state, render state
   //Create game board and render
@@ -281,6 +290,9 @@ function init() {
   //Create scorekeeper and render first move message
   scorekeeper.setMessage()
   renderMessage(scorekeeper.statusMessage)
+  //Set score and render
+  scorekeeper.updateScore(board.gameBoard)
+  renderScore(scorekeeper.blackScore, scorekeeper.whiteScore)
   //Find available moves and display
   board.getAvailableMoves(scorekeeper.turn)
   renderBoard(board.gameBoard, board.availableMoves)
@@ -294,9 +306,9 @@ function render(){
 
 init()
 
-//TODO take params out of most functions since they already have global access to variables
-  //e.g. render board has access to the board since it's global
-
+//TODO take params out of most functions since they already have global access to variables -- this is leading to weirdness like the render function never gets called
+//TODO consistency in what's getting passed -- if it's the whole board object, call the param board; if it's just the gameBoard, call param gameboard
+//TODO make score a black vs. white pie chart using bootstrap
 
 //Notes
   //use render for initial rendering
