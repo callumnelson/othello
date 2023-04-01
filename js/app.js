@@ -1,6 +1,6 @@
 /*-------------------------------- Constants --------------------------------*/
-const numRows = 6
-const numCols = 6
+const numRows = 10
+const numCols = 10
 
 
 
@@ -48,8 +48,10 @@ class Scorekeeper {
     } else {
       if (this.blackScore === this.whiteScore) {
         this.statusMessage = `It's a tie! Or I shall say you are all in all in spleen, And nothing of a man.`
-      } else{
-        this.statusMessage = `${this.turn[0].toUpperCase() + this.turn.slice(1).toLowerCase()} wins! And what was he? Forsooth, a great arithmetician`
+      } else if (this.blackScore > this.whiteScore) {
+        this.statusMessage = `Black wins! And what was he? Forsooth, a great arithmetician`
+      } else {
+        this.statusMessage = `White wins! And what was he? Forsooth, a great arithmetician`
       }
     }
   }
@@ -70,9 +72,16 @@ class Scorekeeper {
     this.whiteScore = wScore
     this.numPieces = nPieces
   }
-  checkGameOver(gameBoard){
-    //TODO figure out all conditions
-    if(board.numPieces === (numRows-2)*(numCols-2)) this.gameOver = true
+  checkGameOver(board){
+    //If the board is full, game over
+    if(this.numPieces === (numRows-2)*(numCols-2)) {
+      this.endGame()
+      this.setMessage()
+    //If neither player has available moves, game over
+    } else if (!board.prevAvailableMoves.length && !board.availableMoves.length) {
+      this.endGame()
+      this.setMessage()
+    }
   }
   endGame(){
     this.gameOver = true
@@ -83,6 +92,7 @@ class Board {
   constructor() {
     this.gameBoard = []
     this.availableMoves = []
+    this.prevAvailableMoves = []
     this.directions = [[-1,-1], [-1,0], [-1,1], [0, -1], [0,1], [1,-1], [1, 0], [1,1]]
   }
   initializeBoard() {
@@ -94,8 +104,8 @@ class Board {
         let square = new Square(r, c)
         newRow.push(square)
         //If the r,c pair is the middle four squares, add a piece to the square
-        if ([2,3].includes(r) && [2,3].includes(c)){
-          r === c ? square.addPiece(new Piece(r, c, 'black')) : square.addPiece(new Piece(r, c, 'white'))
+        if ([numRows/2-1,numRows/2].includes(r) && [numCols/2-1,numCols/2].includes(c)){
+          r === c ? square.addPiece(new Piece(r, c, 'white')) : square.addPiece(new Piece(r, c, 'black'))
           square.isOccupied = true
         }
       }
@@ -139,6 +149,7 @@ class Board {
         }
       })
     })
+    this.prevAvailableMoves = this.availableMoves
     this.availableMoves = moves
   }
   checkForSandwich(square, dir, turn) {
@@ -268,26 +279,21 @@ function handleSquareClick(evt){
     //Flip the pieces around the clicked square
     board.flipPieces(clickedSquare, scorekeeper.turn)
     scorekeeper.updateScore(board.gameBoard)
-    scorekeeper.checkGameOver(board)
     scorekeeper.switchTurn()
     scorekeeper.setMessage()
     board.getAvailableMoves(scorekeeper.turn)
-    //If there are no moves, switch turns and call getAvailableMoves again
-    //TODO refactor this code into scorekeeper class
-    if (!board.availableMoves.length){
+    scorekeeper.checkGameOver(board)
+    //If there aren't available moves, switch turns
+    if(!board.availableMoves.length) {
       scorekeeper.switchTurn()
       scorekeeper.setMessage()
       board.getAvailableMoves(scorekeeper.turn)
-      //if there are still no available moves, the game is over
-      if (!board.availableMoves.length){
-        scorekeeper.endGame()
-        scorekeeper.setMessage()
-      }
-    }else {
-      renderBoard(board.gameBoard, board.availableMoves)
-      renderMessage(scorekeeper.statusMessage)
-      renderScore(scorekeeper.blackScore, scorekeeper.whiteScore)
+      scorekeeper.checkGameOver(board)
+      scorekeeper.setMessage()
     }
+    renderBoard(board.gameBoard, board.availableMoves)
+    renderMessage(scorekeeper.statusMessage)
+    renderScore(scorekeeper.blackScore, scorekeeper.whiteScore)
   }
 }
 
