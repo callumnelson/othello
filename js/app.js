@@ -283,18 +283,21 @@ function handleSquareClick(evt){
     scorekeeper.setMessage()
     board.getAvailableMoves(scorekeeper.turn)
     scorekeeper.checkGameOver(board)
-    //Then render the rest of the changes
+    //Then render the rest of the changes after half a second
     setTimeout(render, 500)
     //If there aren't available moves, switch turns
     if(!board.availableMoves.length) {
       scorekeeper.switchTurn()
       scorekeeper.setMessage()
       board.getAvailableMoves(scorekeeper.turn)
-      setTimeout(render,500)
+      //Wait a whole second in this case, since players might be caught off guard
+      setTimeout(render, 1000)
       //Check if game is over because both players have no available moves
       scorekeeper.checkGameOver(board)
       //Need to set the message again if the game is over
       scorekeeper.setMessage()
+      //Render right away
+      render()
     }
   }
 }
