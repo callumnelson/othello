@@ -1,9 +1,15 @@
+/*-------------------------------- Constants --------------------------------*/
+const numRows = 6
+const numCols = 6
+
+
+
 /*-------------------------------- Classes ----------------------------------*/
 class Square {
   constructor(r, c) {
     this.r = r
     this.c = c
-    this.isEdge = !(this.r%9) || !(this.c%9) ? true : false
+    this.isEdge = !(this.r%(numRows-1)) || !(this.c%(numCols-1)) ? true : false
     this.isOccupied = false
     this.piece = undefined
     this.sandwichDirs = []
@@ -66,7 +72,7 @@ class Scorekeeper {
   }
   checkGameOver(gameBoard){
     //TODO figure out all conditions
-    if(board.numPieces === 64) this.gameOver = true
+    if(board.numPieces === (numRows-2)*(numCols-2)) this.gameOver = true
   }
   endGame(){
     this.gameOver = true
@@ -81,14 +87,14 @@ class Board {
   }
   initializeBoard() {
     //Create a 10x10 board with a 1x10 border around the edge
-    for (let r = 0; r < 10; r++) {
+    for (let r = 0; r < numRows; r++) {
       let newRow = []
-      for (let c = 0; c < 10; c++){
+      for (let c = 0; c < numCols; c++){
         //Instantiate a new square and add to the board
         let square = new Square(r, c)
         newRow.push(square)
         //If the r,c pair is the middle four squares, add a piece to the square
-        if ([4,5].includes(r) && [4,5].includes(c)){
+        if ([2,3].includes(r) && [2,3].includes(c)){
           r === c ? square.addPiece(new Piece(r, c, 'black')) : square.addPiece(new Piece(r, c, 'white'))
           square.isOccupied = true
         }
@@ -172,10 +178,6 @@ class Board {
     else return this.flipOneDirection(nextSquare, dir, turn)
   }
 }
-
-/*-------------------------------- Constants --------------------------------*/
-
-
 
 /*---------------------------- Variables (state) ----------------------------*/
 let board = new Board()

@@ -80,8 +80,8 @@ button:hover {
 
 #board {
   display: grid;
-  grid-template-rows: repeat(10, 7vmin);
-  grid-template-columns: repeat(10, 7vmin);
+  grid-template-rows: repeat(6, 7vmin);
+  grid-template-columns: repeat(6, 7vmin);
 }
 
 .board-square {
