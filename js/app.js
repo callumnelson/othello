@@ -199,6 +199,7 @@ const messageEl = document.getElementById('message')
 const blackScoreEl = document.getElementById('black-score')
 const whiteScoreEl = document.getElementById('white-score')
 const resetBtnEl = document.getElementById('reset-button')
+const turnPieceEls = document.querySelectorAll('.turn-piece')
 
 
 /*----------------------------- Event Listeners -----------------------------*/
@@ -257,6 +258,11 @@ function renderBoard() {
 
 function renderMessage(){
   messageEl.textContent = scorekeeper.statusMessage
+  turnPieceEls.forEach( el => {
+    el.classList.remove('black')
+    el.classList.remove('white')
+    el.classList.add(scorekeeper.turn)
+  })
 }
 
 function renderScore(){
@@ -275,19 +281,19 @@ function handleSquareClick(evt){
     let newPiece = new Piece(clickedSquare.r, clickedSquare.c, scorekeeper.turn)
     clickedSquare.addPiece(newPiece)
     render()
-    let tOneId = setTimeout(() => {
+    setTimeout(() => {
       board.flipPieces(clickedSquare, scorekeeper.turn)
       scorekeeper.updateScore(board.gameBoard)
       scorekeeper.switchTurn()
       scorekeeper.setMessage()
       render()
-      let tTwoId =   setTimeout(() => {
+      setTimeout(() => {
         board.getAvailableMoves(scorekeeper.turn)
         scorekeeper.checkGameOver(board)
         render()
         //If there aren't available moves, switch turns immediately
         if(!board.availableMoves.length) {
-          let tThreeId = setTimeout(() => {
+          setTimeout(() => {
             scorekeeper.switchTurn()
             scorekeeper.setMessage()
             board.getAvailableMoves(scorekeeper.turn)
@@ -297,15 +303,10 @@ function handleSquareClick(evt){
             scorekeeper.setMessage()
             render()
           }, 500)
-          //Clean up timer
-          clearTimeout(tThreeId)
         }
       }, 500)
     }, 500)
   }
-  //Clean up timers
-  clearTimeout(tOneId)
-  clearTimeout(tTwoId)
 }
 
 function resetGame(){

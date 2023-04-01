@@ -7,6 +7,9 @@
   <script defer src="./js/app.js"></script>
   <title>Othello</title>
   <link id="favicon" rel="icon" href="./assets/othello.png" type="image/png" sizes="32x32"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/style.css"/>
 </head>
 <body>
@@ -15,25 +18,40 @@
     <h3>Thou told'st me thou didst hold him in thy hate.</h6>
   </header>
   <section id="settings-wrapper">
-    <div id="score-wrapper">
-      <p id="black-score">Black: 2</p>
-      <p id="white-score">White: 2</p>
+    <div id="info-wrapper">
+      <div id="score-wrapper">
+        <p id="score-header">Score: </p>
+        <p id="black-score">Black: 2</p>
+        <p id="white-score">White: 2</p>
+      </div>
+      <div id="message-wrapper">
+        <div class="turn-piece"></div>
+        <p id="message"></p>
+        <div class="turn-piece"></div>
+      </div>
     </div>
-    <div id="message-wrapper">
-      <p id="message"></p>
-    </div>
-    <div id="reset">
+    <div id="input-wrapper">
+      <div id="delay-input">
+        <label for="delay">Set turn delay (sec): </label>
+        <input type="range" id="delay" name="delay"
+               min="0" max="3">
+      </div>
       <button id="reset-button">Reset Game</button>
     </div>
   </section>
   <main id="game-wrapper">
-    <div class="outer-content"></div>
+    <div class="outer-content">
+      
+    </div>
     <div id="board">
       
     </div>
-    <div class="outer-content"></div>
+    <div class="outer-content">
+      
+    </div>
   </main>
   <footer id="footer-wrapper">
+
   </footer>
 </body>
 </html>
