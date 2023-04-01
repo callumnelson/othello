@@ -191,7 +191,7 @@ class Board {
 /*---------------------------- Variables (state) ----------------------------*/
 let board = new Board()
 let scorekeeper = new Scorekeeper()
-
+let delay = 500
 
 /*------------------------ Cached Element References ------------------------*/
 const boardEl = document.getElementById('board')
@@ -200,12 +200,13 @@ const blackScoreEl = document.getElementById('black-score')
 const whiteScoreEl = document.getElementById('white-score')
 const resetBtnEl = document.getElementById('reset-button')
 const turnPieceEls = document.querySelectorAll('.turn-piece')
-
+const delayInputEl = document.getElementById('delay-input')
 
 /*----------------------------- Event Listeners -----------------------------*/
 
 boardEl.addEventListener('click', handleSquareClick)
 resetBtnEl.addEventListener('click', resetGame)
+delayInputEl.addEventListener('change', updateDelay)
 
 /*-------------------------------- Functions --------------------------------*/
 
@@ -302,11 +303,15 @@ function handleSquareClick(evt){
             //Need to set the message again if the game is over
             scorekeeper.setMessage()
             render()
-          }, 500)
+          }, delay)
         }
-      }, 500)
-    }, 500)
+      }, delay)
+    }, delay)
   }
+}
+
+function updateDelay(evt){
+  delay = evt.target.value*500
 }
 
 function resetGame(){
