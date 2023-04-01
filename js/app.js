@@ -3,7 +3,6 @@ const numRows = 10
 const numCols = 10
 
 
-
 /*-------------------------------- Classes ----------------------------------*/
 class Square {
   constructor(r, c) {
@@ -276,29 +275,36 @@ function handleSquareClick(evt){
     let clickedSquare = board.gameBoard[r][c]
     let newPiece = new Piece(clickedSquare.r, clickedSquare.c, scorekeeper.turn)
     clickedSquare.addPiece(newPiece)
-    //Flip the pieces around the clicked square
+    //Render the placed piece immediately
+    render()
     board.flipPieces(clickedSquare, scorekeeper.turn)
     scorekeeper.updateScore(board.gameBoard)
     scorekeeper.switchTurn()
     scorekeeper.setMessage()
     board.getAvailableMoves(scorekeeper.turn)
     scorekeeper.checkGameOver(board)
+    //Then render the rest of the changes
+    setTimeout(render, 500)
     //If there aren't available moves, switch turns
     if(!board.availableMoves.length) {
       scorekeeper.switchTurn()
       scorekeeper.setMessage()
       board.getAvailableMoves(scorekeeper.turn)
+      setTimeout(render,500)
+      //Check if game is over because both players have no available moves
       scorekeeper.checkGameOver(board)
+      //Need to set the message again if the game is over
       scorekeeper.setMessage()
     }
-    render()
   }
 }
 
 function resetGame(){
+  //Clear the GUI 
   while (boardEl.firstChild) {
     boardEl.removeChild(boardEl.firstChild);
   }
+  //Instantiate new board and scorekeeper and point global vars to them
   board = new Board()
   scorekeeper = new Scorekeeper()
   init()
