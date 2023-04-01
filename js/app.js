@@ -2,7 +2,6 @@
 const numRows = 10
 const numCols = 10
 
-
 /*-------------------------------- Classes ----------------------------------*/
 class Square {
   constructor(r, c) {
@@ -275,31 +274,38 @@ function handleSquareClick(evt){
     let clickedSquare = board.gameBoard[r][c]
     let newPiece = new Piece(clickedSquare.r, clickedSquare.c, scorekeeper.turn)
     clickedSquare.addPiece(newPiece)
-    //Render the placed piece immediately
     render()
-    board.flipPieces(clickedSquare, scorekeeper.turn)
-    scorekeeper.updateScore(board.gameBoard)
-    scorekeeper.switchTurn()
-    scorekeeper.setMessage()
-    board.getAvailableMoves(scorekeeper.turn)
-    scorekeeper.checkGameOver(board)
-    //Then render the rest of the changes after half a second
-    setTimeout(render, 500)
-    //If there aren't available moves, switch turns
-    if(!board.availableMoves.length) {
+    let tOneId = setTimeout(() => {
+      board.flipPieces(clickedSquare, scorekeeper.turn)
+      scorekeeper.updateScore(board.gameBoard)
       scorekeeper.switchTurn()
       scorekeeper.setMessage()
-      board.getAvailableMoves(scorekeeper.turn)
-      //Wait a whole second in this case, since players might be caught off guard
-      setTimeout(render, 1000)
-      //Check if game is over because both players have no available moves
-      scorekeeper.checkGameOver(board)
-      //Need to set the message again if the game is over
-      scorekeeper.setMessage()
-      //Render right away
       render()
-    }
+      let tTwoId =   setTimeout(() => {
+        board.getAvailableMoves(scorekeeper.turn)
+        scorekeeper.checkGameOver(board)
+        render()
+        //If there aren't available moves, switch turns immediately
+        if(!board.availableMoves.length) {
+          let tThreeId = setTimeout(() => {
+            scorekeeper.switchTurn()
+            scorekeeper.setMessage()
+            board.getAvailableMoves(scorekeeper.turn)
+            //Check if game is over because both players have no available moves
+            scorekeeper.checkGameOver(board)
+            //Need to set the message again if the game is over
+            scorekeeper.setMessage()
+            render()
+          }, 500)
+          //Clean up timer
+          clearTimeout(tThreeId)
+        }
+      }, 500)
+    }, 500)
   }
+  //Clean up timers
+  clearTimeout(tOneId)
+  clearTimeout(tTwoId)
 }
 
 function resetGame(){
@@ -334,11 +340,4 @@ function render(){
 
 init()
 
-//TODO take params out of most functions since they already have global access to variables -- this is leading to weirdness like the render function never gets called
-//TODO consistency in what's getting passed -- if it's the whole board object, call the param board; if it's just the gameBoard, call param gameboard
 //TODO make score a black vs. white pie chart using bootstrap
-
-//Notes
-  //use render for initial rendering
-  //use update for updated rendering
-  //use set for setting game state variables
