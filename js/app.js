@@ -210,8 +210,8 @@ resetBtnEl.addEventListener('click', resetGame)
 
 /*-------------------------------- Functions --------------------------------*/
 
-function createBoard(gameBoard) {
-  gameBoard.forEach(row => {
+function createBoard() {
+  board.gameBoard.forEach(row => {
     row.forEach(square => {
       let squareEl = document.createElement('div')
       squareEl.className = `board-square ${square.isEdge? 'edge' : 'not-edge'}`
@@ -226,16 +226,16 @@ function createBoard(gameBoard) {
   })
 }
 
-function renderBoard(gameBoard, moves) {
-  gameBoard.forEach( row => {
+function renderBoard() {
+  board.gameBoard.forEach( row => {
     row.forEach( square => {
       let sqElId = `${square.r},${square.c}`
       let sqEl = document.getElementById(sqElId)
       //If the square is in the available moves and isn't already highlighted then add the available class, otherwise remove available tag if it exists
-      if (moves.includes(square) && !sqEl.classList.contains('available')) {
+      if (board.availableMoves.includes(square) && !sqEl.classList.contains('available')) {
         sqEl.classList.add('available')
       //Remove the available class if it's not a move
-      } else if (!moves.includes(square)){
+      } else if (!board.availableMoves.includes(square)){
         sqEl.classList.remove('available')
       }
       //If the square has a piece element
@@ -257,13 +257,13 @@ function renderBoard(gameBoard, moves) {
   })
 }
 
-function renderMessage(message){
-  messageEl.textContent = message
+function renderMessage(){
+  messageEl.textContent = scorekeeper.statusMessage
 }
 
-function renderScore(blackScore, whiteScore){
-  blackScoreEl.textContent = `Black: ${blackScore}`
-  whiteScoreEl.textContent = `White: ${whiteScore}`
+function renderScore(){
+  blackScoreEl.textContent = `Black: ${scorekeeper.blackScore}`
+  whiteScoreEl.textContent = `White: ${scorekeeper.whiteScore}`
 }
 
 function handleSquareClick(evt){
@@ -291,9 +291,7 @@ function handleSquareClick(evt){
       scorekeeper.checkGameOver(board)
       scorekeeper.setMessage()
     }
-    renderBoard(board.gameBoard, board.availableMoves)
-    renderMessage(scorekeeper.statusMessage)
-    renderScore(scorekeeper.blackScore, scorekeeper.whiteScore)
+    render()
   }
 }
 
@@ -307,25 +305,22 @@ function resetGame(){
 }
 
 function init() {
-  //These should go in pairs => update state, render state
-  //Create game board and render
+  //Create game board
   board.initializeBoard()
-  createBoard(board.gameBoard)
-  //Create scorekeeper and render first move message
+  createBoard()
+  //Create scorekeeper and set initial message
   scorekeeper.setMessage()
-  renderMessage(scorekeeper.statusMessage)
-  //Set score and render
+  //Calculate initial score
   scorekeeper.updateScore(board.gameBoard)
-  renderScore(scorekeeper.blackScore, scorekeeper.whiteScore)
-  //Find available moves and display
+  //Find available moves
   board.getAvailableMoves(scorekeeper.turn)
-  renderBoard(board.gameBoard, board.availableMoves)
+  render()
 }
 
 function render(){
-  renderBoard(board.gameBoard)
-  renderMessage(scorekeeper.statusMessage)
-  renderScore(scorekeeper.blackScore, scorekeeper.whiteScore)
+  renderBoard()
+  renderMessage()
+  renderScore()
 }
 
 init()
