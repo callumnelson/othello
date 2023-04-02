@@ -243,8 +243,7 @@ function renderBoard() {
         //If that element is already represented graphically, make sure it's the right color
         if (sqEl.childElementCount){
           let pieceEl = sqEl.childNodes[0]
-          pieceEl.classList.remove('black')
-          pieceEl.classList.remove('white')
+          pieceEl.classList.remove('black', 'white')
           pieceEl.classList.add(square.piece.color)
         //Otherwise create a new piece and add it to the dom
         } else {
@@ -260,8 +259,7 @@ function renderBoard() {
 function renderMessage(){
   messageEl.textContent = scorekeeper.statusMessage
   turnPieceEls.forEach( el => {
-    el.classList.remove('black')
-    el.classList.remove('white')
+    el.classList.remove('black', 'white')
     el.classList.add(scorekeeper.turn)
   })
 }
