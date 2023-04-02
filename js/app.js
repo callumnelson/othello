@@ -188,6 +188,15 @@ class Board {
   }
 }
 
+class Computer {
+  constructor(level){
+    this.level = level
+  }
+  computeMove(board){
+
+  }
+}
+
 /*---------------------------- Variables (state) ----------------------------*/
 let board = new Board()
 let scorekeeper = new Scorekeeper()
@@ -265,8 +274,8 @@ function renderMessage(){
 }
 
 function renderScore(){
-  blackScoreEl.textContent = `Black: ${scorekeeper.blackScore}`
-  whiteScoreEl.textContent = `White: ${scorekeeper.whiteScore}`
+  blackScoreEl.textContent = `${scorekeeper.blackScore}`
+  whiteScoreEl.textContent = `${scorekeeper.whiteScore}`
 }
 
 function handleSquareClick(evt){

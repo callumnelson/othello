@@ -16,47 +16,83 @@
   <header id="header-wrapper">
     <h1>Othello</h1>
   </header>
-  <section id="settings-wrapper">
-    <div id="info-wrapper">
-      <div id="score-wrapper">
-        <p id="score-header">Score: </p>
-        <p id="black-score">Black: 2</p>
-        <p id="white-score">White: 2</p>
-      </div>
-      <div id="message-wrapper">
-        <div class="turn-piece"></div>
-        <p id="message"></p>
-        <div class="turn-piece"></div>
-      </div>
-    </div>
-    <div id="input-wrapper">
-      <label for="delay">Set turn delay (sec): </label>
-      <div id="delay-input">
-        <input type="range" id="delay-input" name="delay"
-               min="0" max="3" step="0.5" value="0" list="values">
-        <datalist id="values">
-          <option value="0" label="0"></option>
-          <option value="1" label="1"></option>
-          <option value="2" label="2"></option>
-          <option value="3" label="3"></option>
-        </datalist>
-      </div>
-      <button id="reset-button">Reset Game</button>
-    </div>
-  </section>
+  <div id="message-wrapper">
+    <div class="turn-piece"></div>
+    <p id="message"></p>
+    <div class="turn-piece"></div>
+  </div>
   <main id="game-wrapper">
-    <div class="outer-content">
+    <section id="board-wrapper">
+      <div id="board">
       
-    </div>
-    <div id="board">
-      
-    </div>
-    <div class="outer-content">
-      
-    </div>
+      </div>
+    </section>
+    <section id="settings-wrapper">
+      <div id="info-wrapper">
+        <h2 class="header">Scoreboard</h2>
+        <div id="score-wrapper">
+          <div id="black-score-wrapper">
+            <h1>Black</h1>
+            <p id="black-score"></p>
+          </div>
+          <div id="white-score-wrapper">
+            <h1>White</h1>
+            <p id="white-score"></p>
+          </div>
+        </div>
+      </div>
+      <h2 class="header">Settings</h2>
+      <div id="player-type-wrapper">        
+        <fieldset id="black-player-type">
+          <div>
+            <input type="radio" id="human-black" name="black-player" checked>
+          </div>
+          <div>
+            <input type="radio" id="level-one-ai-black" name="black-player" value="level-one-ai">
+          </div>
+          <div>
+            <input type="radio" id="level-two-ai-black" name="black-player" value="level-two-ai">
+          </div>
+          <div>
+            <input type="radio" id="level-three-ai-black" name="black-player" value="level-three-ai">
+          </div>
+        </fieldset>
+        <div id="player-type-labels">
+          <p class="player-type">Human</p>
+          <p class="player-type">Computer I</p>
+          <p class="player-type">Computer II</p>
+          <p class="player-type">Computer III</p>
+        </div>
+        <fieldset id="white-player-type">
+          <div>
+            <input type="radio" id="human-white" name="white-player" checked>
+          </div>
+          <div>
+            <input type="radio" id="level-one-ai-white" name="white-player" value="level-one-ai">
+          </div>
+          <div>
+            <input type="radio" id="level-two-ai-white" name="white-player" value="level-two-ai">
+          </div>
+          <div>
+            <input type="radio" id="level-three-ai-white" name="white-player" value="level-three-ai">
+          </div>
+        </fieldset>
+      </div>
+      <div id="input-wrapper">
+        <label for="delay">Set turn delay (sec): </label>
+        <div id="delay-input">
+          <input type="range" id="delay-input" name="delay"
+                 min="0" max="3" step="0.5" value="0" list="values">
+          <datalist id="values">
+            <option value="0" label="0"></option>
+            <option value="1" label="1"></option>
+            <option value="2" label="2"></option>
+            <option value="3" label="3"></option>
+          </datalist>
+        </div>
+        <button id="reset-button">Reset Game</button>
+      </div>
+    </section>
   </main>
-  <footer id="footer-wrapper">
-
-  </footer>
 </body>
 </html>
