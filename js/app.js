@@ -191,7 +191,7 @@ class Board {
 /*---------------------------- Variables (state) ----------------------------*/
 let board = new Board()
 let scorekeeper = new Scorekeeper()
-let delay = 500
+let delay
 
 /*------------------------ Cached Element References ------------------------*/
 const boardEl = document.getElementById('board')
@@ -322,6 +322,8 @@ function resetGame(){
   //Instantiate new board and scorekeeper and point global vars to them
   board = new Board()
   scorekeeper = new Scorekeeper()
+  //Reset delay slider value to 0
+  delayInputEl.childNodes[1].value = 0
   init()
 }
 
@@ -335,6 +337,8 @@ function init() {
   scorekeeper.updateScore(board.gameBoard)
   //Find available moves
   board.getAvailableMoves(scorekeeper.turn)
+  //Set initial delay
+  delay = delayInputEl.childNodes[1].value
   render()
 }
 
