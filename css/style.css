@@ -141,8 +141,8 @@ input[type="range"]:hover {
 
 #board {
   display: grid;
-  grid-template-rows: repeat(10, 7vmin);
-  grid-template-columns: repeat(10, 7vmin);
+  grid-template-rows: repeat(10, 6vmin);
+  grid-template-columns: repeat(10, 6vmin);
 }
 
 .board-square {
@@ -172,8 +172,8 @@ input[type="range"]:hover {
 
 .piece {
   border-radius: 50%;
-  width: 6vmin;
-  height: 6vmin;
+  width: 5vmin;
+  height: 5vmin;
   border: none;
 }
 
