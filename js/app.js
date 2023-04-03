@@ -333,9 +333,9 @@ function playMove(square) {
     render()
     setTimeout(() => {
       board.flipPieces(square, scorekeeper.turn)
-      scorekeeper.updateScore(board.gameBoard)
       scorekeeper.switchTurn()
       scorekeeper.setMessage()
+      scorekeeper.updateScore(board.gameBoard)
       render()
       setTimeout(() => {
         board.getAvailableMoves(scorekeeper.turn)
@@ -371,9 +371,9 @@ function handleSquareClick(evt){
 }
 
 function handlePlayerTypeChange() {
+  //Loop through radio inputs to get currently selected player type
   radioInputEls.forEach(inputEl => {
     let pColor = inputEl.id.split('-')[1]
-    console.log(inputEl)
     if (inputEl.checked) {
       //Coerce level to number
       pColor === 'black' ? blackPlayer.level = inputEl.id.split('-')[0]*1 : whitePlayer.level = inputEl.id.split('-')[0]*1
@@ -382,6 +382,7 @@ function handlePlayerTypeChange() {
   //Only create a timer if we're creating a computer player and there isn't already a timer that exists
   if (!timer && (blackPlayer.level > 0 || whitePlayer.level > 0)){
     //Always delay the computer by a second so rendering happens discernably
+    //TODO figure out a way to update the delay after it was passed to the initial call
     timer = setInterval(playComputer, delay)
   //If we are changing the computer back to a player and that leaves us with no computer players then clear the timer
   } else if (timer && !blackPlayer.level && !whitePlayer.level){
@@ -400,7 +401,7 @@ function playComputer(){
   }
   //Only use the AI if there's an AI player and it's their turn
   else if (scorekeeper.turn === currentPlayer.color && currentPlayer.level > 0){
-    console.log('Looking for moves')
+
     let bestMove = currentPlayer.computeBestMove(board, scorekeeper)
     if(bestMove.r !== undefined){
       let bestMoveSquare = board.gameBoard[bestMove.r][bestMove.c]
