@@ -224,8 +224,8 @@ input[type="range"]:hover {
 
 #board {
   display: grid;
-  grid-template-rows: repeat(6, calc((100vmin - 264px)/10));
-  grid-template-columns: repeat(6, calc((100vmin - 264px)/10));
+  grid-template-rows: repeat(10, calc((100vmin - 264px)/10));
+  grid-template-columns: repeat(10, calc((100vmin - 264px)/10));
 }
 
 .board-square {

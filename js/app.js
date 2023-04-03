@@ -1,6 +1,6 @@
 /*-------------------------------- Constants --------------------------------*/
-const numRows = 6
-const numCols = 6
+const numRows = 10
+const numCols = 10
 
 /*-------------------------------- Classes ----------------------------------*/
 class Square {
