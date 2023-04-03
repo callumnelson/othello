@@ -3,6 +3,12 @@ const numRows = 10
 const numCols = 10
 
 /*-------------------------------- Classes ----------------------------------*/
+/**
+   * @class
+   * @description Square class to hold information about row/column, whether the square is an edge, is occupied, and the sandwiches that the square can be used to make give the piece that it holds
+   * @param {Number} r The row index of the square
+   * @param {Number} c The column index of the square
+   */
 class Square {
   constructor(r, c) {
     this.r = r
@@ -12,12 +18,23 @@ class Square {
     this.piece = undefined
     this.sandwichDirs = []
   }
+  /**
+   * @method
+   * @description Add a piece to the square
+   * @param {Piece} piece The piece to be placed on the square
+   */
   addPiece(piece) {
     this.piece = piece
     this.isOccupied = true
   }
 }
-
+/**
+   * @class
+   * @description Simple class to represent pieces on the board
+   * @param {Number} r The row index of the piece
+   * @param {Number} c The column index of the piece
+   * @param {String} color The color of the piece
+   */
 class Piece {
   constructor(r, c, color){
     this.r = r
@@ -25,7 +42,10 @@ class Piece {
     this.color = color
   }
 }
-
+/**
+   * @class
+   * @description Class to maintain information about whose turn it is, what the score is, and whether the game is over
+   */
 class Scorekeeper {
   constructor(){
     this.blackScore = 0
@@ -38,6 +58,11 @@ class Scorekeeper {
   switchTurn(){
     this.turn === 'black' ? this.turn = 'white' : this.turn = 'black'
   }
+  /**
+   * @method
+   * @description Update the message that indicates the state of the game (whose turn it is, winner, tie)
+   * @param {Array} gameBoard The current gameBoard array
+   */
   setMessage(){
     //If the game is not over, update the status message for whose turn it is next
     if (!this.gameOver) {
@@ -53,6 +78,11 @@ class Scorekeeper {
       }
     }
   }
+  /**
+   * @method
+   * @description Update the score by counting the pieces on the board of each player's color
+   * @param {Array} gameBoard The current gameBoard array
+   */
   updateScore(gameBoard){
     let bScore = 0
     let wScore = 0
@@ -70,6 +100,10 @@ class Scorekeeper {
     this.whiteScore = wScore
     this.numPieces = nPieces
   }
+  /**
+   * @method
+   * @description Check if any of the end game scenarios have been met
+   */
   checkGameOver(board){
     //If the board is full, game over
     if(this.numPieces === (numRows-2)*(numCols-2)) {
@@ -81,11 +115,18 @@ class Scorekeeper {
       this.setMessage()
     }
   }
+  /**
+   * @method
+   * @description End the game
+   */
   endGame(){
     this.gameOver = true
   }
 }
-
+/**
+   * @class
+   * @description Hold and update gameBoard as well as information about the moves available to the players at any given point in time
+   */
 class Board {
   constructor() {
     this.gameBoard = []
@@ -93,6 +134,10 @@ class Board {
     this.prevAvailableMoves = []
     this.directions = [[-1,-1], [-1,0], [-1,1], [0, -1], [0,1], [1,-1], [1, 0], [1,1]]
   }
+  /**
+   * @method
+   * @description Set the initial board state with four pieces in the four middle squares and find the available moves
+   */
   initializeBoard() {
     //Create a 10x10 board with a 1x10 border around the edge
     for (let r = 0; r < numRows; r++) {
@@ -110,6 +155,11 @@ class Board {
       this.gameBoard.push(newRow)
     }
   }
+  /**
+   * @method
+   * @description Get all available moves on the board by looping through board squares and checking for sandwiches in each direction
+   * @param {String} turn The current turn
+   */
   getAvailableMoves(turn) {
     //Return an array of those moves so that we can highlight them on the board
     let moves = []
@@ -120,7 +170,7 @@ class Board {
         square.sandwichDirs = []
       })
     })
-
+    
     this.gameBoard.forEach(row => {
       row.forEach(square => {
         //If this square is not an edge square
@@ -149,12 +199,22 @@ class Board {
     })
     this.availableMoves = moves
   }
-  //Clear available moves to disable user input in between turns where there's a delay
+  /**
+   * @method
+   * @description Set the prevMovesArray to point at the availableMoves before emptying available moves
+   */
   clearAvailableMoves() {
     this.prevAvailableMoves = this.availableMoves
     this.availableMoves = []
   }
-
+  /**
+   * @method
+   * @description For all squares on the board, check if the current player can make a sandwich by playing there
+   * @param {Square} Square First square of a potential sandwich
+   * @param {Array} dir Array corresponding to the direction in which to travel on the board
+   * @param {String} turn The current turn
+   * @returns {checkForSandwich} Calls self recursively until one of the return conditions has been met
+   */
   checkForSandwich(square, dir, turn) {
     //We know we're receiving a square that is the opposite color of turn
     //We want to check the status of the next square in direction dir
@@ -170,7 +230,12 @@ class Board {
     //Otherwise we found another of their pieces and we need to keep checking
     else return this.checkForSandwich(toCheckSquare, dir, turn)
   }
-
+  /**
+   * @method
+   * @description Loop through all directions in which there is a sandwich to be made and call flipOneDirection
+   * @param {Square} Square at which to a move was played
+   * @param {String} turn The current turn
+   */
   flipPieces(square, turn){
     square.sandwichDirs.forEach( sDir => {
       let toFlipR = square.r + sDir[0]
@@ -179,7 +244,14 @@ class Board {
       this.flipOneDirection(toFlipSq, sDir, turn)
     })
   }
-
+  /**
+   * @method
+   * @description Recursively flip pieces in one cardinal direction
+   * @param {Square} Square The first square to flip
+   * @param {Array} dir Array corresponding to the direction in which to travel on the board
+   * @param {String} turn The current turn
+   * @returns {flipOneDirection} Calls self recursively until all pieces in sandwich have been flipped
+   */
   flipOneDirection(square, dir, turn){
     square.piece.color = turn === 'white' ? 'white' : 'black'
     let newRow = square.r + dir[0]
@@ -192,13 +264,23 @@ class Board {
     else return this.flipOneDirection(nextSquare, dir, turn)
   }
 }
-
+/**
+ * @class
+ * @description Represents the players of the game and stores information about their level and color
+ */
 class Player {
   constructor(level, color){
     //Level is 0 for humans
     this.level = level
     this.color = color
   }
+  /**
+ * @method
+ * @description Given the current board and scorekeeper, creates a deep copy and computes the best move for the current player 
+ * @param {Board} Board The current instance of the board
+ * @param {Board} Scorekeeper The current instance of the scorekeeper
+ * @returns {object} An object containing the coordinates of the best move and move's value (the number of pieces it will net the current player)
+ */
   computeBestMove(board, scorekeeper){
     let bestScore = 0
     let bestMove = {}
@@ -262,11 +344,12 @@ const radioInputEls = document.querySelectorAll('input[type=radio]')
 boardEl.addEventListener('click', handleSquareClick)
 resetBtnEl.addEventListener('click', resetGame)
 saveBtnEl.addEventListener('click', saveSettings)
-// delayInputEl.addEventListener('change', updateDelay)
-// pTypeEl.addEventListener('change', handlePlayerTypeChange)
 
 /*-------------------------------- Functions --------------------------------*/
-
+/**
+ * @function
+ * @description Uses the DOM to create the initial game board after it has been initialized in the game state
+ */
 function createBoard() {
   board.gameBoard.forEach(row => {
     row.forEach(square => {
@@ -282,7 +365,10 @@ function createBoard() {
     })
   })
 }
-
+/**
+ * @function
+ * @description Renders the current board, including the available moves
+ */
 function renderBoard() {
   board.gameBoard.forEach( row => {
     row.forEach( square => {
@@ -312,7 +398,10 @@ function renderBoard() {
     })
   })
 }
-
+/**
+ * @function
+ * @description Renders the appropriate message according to the current game state
+ */
 function renderMessage(){
   messageEl.textContent = scorekeeper.statusMessage
   turnPieceEls.forEach( el => {
@@ -332,16 +421,20 @@ function renderMessage(){
     }
   })
 }
-
+/**
+ * @function
+ * @description Renders the current score
+ */
 function renderScore(){
   blackScoreEl.textContent = `${scorekeeper.blackScore}`
   whiteScoreEl.textContent = `${scorekeeper.whiteScore}`
 }
-
+/**
+ * @function
+ * @description Plays a move for the current player on the square that was passed and does so using timeouts if delay > 0. Checks if the move results in the next player being unable to play and switches turns if necessary.
+ * @param {Square} Square instance that should be played upon
+ */
 function playMove(square) {
-  console.log('Current turn:', scorekeeper.turn)
-  console.log('Available moves:', board.availableMoves)
-  console.log('Previous moves:', board.prevAvailableMoves)
   let newPiece = new Piece(square.r, square.c, scorekeeper.turn)
   square.addPiece(newPiece)
   board.clearAvailableMoves()
@@ -373,7 +466,10 @@ function playMove(square) {
     }, delay)
   }, delay)
 }
-
+/**
+ * @function
+ * @description Handles the user's click on an available square and plays the move that was clicked if it was valid at the time
+ */
 function handleSquareClick(evt){
   let clickedEl = evt.target
   //Only handle the click if user clicked on an available square and the current turn is not a computer player's turn
@@ -387,7 +483,10 @@ function handleSquareClick(evt){
     }
   }
 }
-
+/**
+ * @function
+ * @description Called every interval if there is a computer player to grab the best move on the board and play that move
+ */
 function playComputer(){
   let currentPlayer = scorekeeper.turn === 'black' ? blackPlayer : whitePlayer  
   //Clear the timer if the game is over
@@ -405,8 +504,11 @@ function playComputer(){
     
   } 
 }
-
-function handlePlayerTypeChange() {
+/**
+ * @function
+ * @description Implement changes to player types made by the user and clear/set intervals for computer players accordingly
+ */
+function updatePlayerType() {
   //Loop through radio inputs to get currently selected player type
   radioInputEls.forEach(inputEl => {
     let pColor = inputEl.id.split('-')[1]
@@ -429,16 +531,25 @@ function handlePlayerTypeChange() {
     timer = undefined
   }
 }
-
+/**
+ * @function
+ * @description Update the delay between turns that gets used in the timeout and interval
+ */
 function updateDelay(){
   delay = delayInputEl.childNodes[1].value*500
 }
-
+/**
+ * @function
+ * @description Handle user clicking the save settings button
+ */
 function saveSettings(){
   updateDelay()
-  handlePlayerTypeChange()
+  updatePlayerType()
 }
-
+/**
+ * @function
+ * @description Reset the game it its initial state when the user clicks the reset game button
+ */
 function resetGame(){
   //Clear the GUI 
   while (boardEl.firstChild) {
@@ -464,6 +575,10 @@ function resetGame(){
   init()
 }
 
+/**
+ * @function
+ * @description Set initial game state, create instances of board, scorekeeper, and player classes, and render
+ */
 function init() {
   //Create game board
   board.initializeBoard()
@@ -483,12 +598,14 @@ function init() {
   render()
 }
 
-//https://gist.github.com/GeorgeGkas/36f7a7f9a9641c2115a11d58233ebed2
+
 /**
  * @function
  * @description Deep clone a class instance.
  * @param {object} instance The class instance you want to clone.
  * @returns {object} A new cloned instance.
+ * @author GeorgeGkas
+ * @link https://gist.github.com/GeorgeGkas/36f7a7f9a9641c2115a11d58233ebed2
  */
 function clone(instance) {
   return Object.assign(
@@ -503,6 +620,10 @@ function clone(instance) {
   )
 }
 
+/**
+ * @function
+ * @description Render changes made to state
+ */
 function render(){
   renderBoard()
   renderMessage()
