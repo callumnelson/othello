@@ -360,13 +360,15 @@ function playMove(square) {
 
 function handleSquareClick(evt){
   let clickedEl = evt.target
-  //Only handle the click if they clicked on an available square
+  //Only handle the click if user clicked on an available square and the current turn is not a computer player's turn
   if(clickedEl.classList.contains('available')){
-    let sqCoords = clickedEl.id.split(',')
-    let r = sqCoords[0]
-    let c = sqCoords[1]
-    let clickedSquare = board.gameBoard[r][c]
-    playMove(clickedSquare)
+    if ((scorekeeper.turn === 'black' && !blackPlayer.level) || (scorekeeper.turn === 'white' && !whitePlayer.level)){
+      let sqCoords = clickedEl.id.split(',')
+      let r = sqCoords[0]
+      let c = sqCoords[1]
+      let clickedSquare = board.gameBoard[r][c]
+      playMove(clickedSquare)
+    }
   }
 }
 
@@ -382,7 +384,7 @@ function playComputer(){
   else if (scorekeeper.turn === currentPlayer.color && currentPlayer.level > 0){
 
     let bestMove = currentPlayer.computeBestMove(board, scorekeeper)
-    if(bestMove.r !== undefined){
+    if(bestMove.r){
       let bestMoveSquare = board.gameBoard[bestMove.r][bestMove.c]
       playMove(bestMoveSquare)
     }
