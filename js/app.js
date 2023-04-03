@@ -193,16 +193,16 @@ class Board {
   }
 }
 
-class Computer {
-  constructor(level){
+class Player {
+  constructor(level, color){
+    //Level is 0 for humans
     this.level = level
+    this.color = color
   }
   computeBestMove(board, scorekeeper){
     let bestScore = 0
     let bestMove = {}
     board.availableMoves.forEach( move => {
-      console.log('Turn:', scorekeeper.turn)
-      console.log(move.r, move.c)
       //Make deep copies so we don't mess up the real game board
       let scorekeeperCopy = clone(scorekeeper)
       let boardCopy = clone(board)
@@ -239,8 +239,8 @@ class Computer {
 /*---------------------------- Variables (state) ----------------------------*/
 let board = new Board()
 let scorekeeper = new Scorekeeper()
-let delay
-let computerPlayer = new Computer(1)
+let delay, timer
+let blackPlayer, whitePlayer
 
 /*------------------------ Cached Element References ------------------------*/
 const boardEl = document.getElementById('board')
@@ -248,15 +248,22 @@ const messageEl = document.getElementById('message')
 const blackScoreEl = document.getElementById('black-score')
 const whiteScoreEl = document.getElementById('white-score')
 const resetBtnEl = document.getElementById('reset-button')
+const saveBtnEl = document.getElementById('save-button')
 const turnPieceEls = document.querySelectorAll('.turn-piece')
 const delayInputEl = document.getElementById('delay-input')
+//Whole wrapper for event bubbling
+const pTypeEl = document.getElementById('player-type-wrapper')
+//Inputs for resetting
+const radioInputEls = document.querySelectorAll('input[type=radio]')
 
 
 /*----------------------------- Event Listeners -----------------------------*/
 
 boardEl.addEventListener('click', handleSquareClick)
 resetBtnEl.addEventListener('click', resetGame)
-delayInputEl.addEventListener('change', updateDelay)
+saveBtnEl.addEventListener('click', saveSettings)
+// delayInputEl.addEventListener('change', updateDelay)
+// pTypeEl.addEventListener('change', handlePlayerTypeChange)
 
 /*-------------------------------- Functions --------------------------------*/
 
@@ -319,20 +326,13 @@ function renderScore(){
   whiteScoreEl.textContent = `${scorekeeper.whiteScore}`
 }
 
-function handleSquareClick(evt){
-  let clickedEl = evt.target
-  //Only handle the click if they clicked on an available square
-  if(clickedEl.classList.contains('available')){
-    let sqCoords = clickedEl.id.split(',')
-    let r = sqCoords[0]
-    let c = sqCoords[1]
-    let clickedSquare = board.gameBoard[r][c]
-    let newPiece = new Piece(clickedSquare.r, clickedSquare.c, scorekeeper.turn)
-    clickedSquare.addPiece(newPiece)
+function playMove(square) {
+  let newPiece = new Piece(square.r, square.c, scorekeeper.turn)
+    square.addPiece(newPiece)
     board.clearAvailableMoves()
     render()
     setTimeout(() => {
-      board.flipPieces(clickedSquare, scorekeeper.turn)
+      board.flipPieces(square, scorekeeper.turn)
       scorekeeper.updateScore(board.gameBoard)
       scorekeeper.switchTurn()
       scorekeeper.setMessage()
@@ -356,11 +356,67 @@ function handleSquareClick(evt){
         }
       }, delay)
     }, delay)
+}
+
+function handleSquareClick(evt){
+  let clickedEl = evt.target
+  //Only handle the click if they clicked on an available square
+  if(clickedEl.classList.contains('available')){
+    let sqCoords = clickedEl.id.split(',')
+    let r = sqCoords[0]
+    let c = sqCoords[1]
+    let clickedSquare = board.gameBoard[r][c]
+    playMove(clickedSquare)
   }
 }
 
-function updateDelay(evt){
-  delay = evt.target.value*500
+function handlePlayerTypeChange() {
+  radioInputEls.forEach(inputEl => {
+    let pColor = inputEl.id.split('-')[1]
+    console.log(inputEl)
+    if (inputEl.checked) {
+      //Coerce level to number
+      pColor === 'black' ? blackPlayer.level = inputEl.id.split('-')[0]*1 : whitePlayer.level = inputEl.id.split('-')[0]*1
+    }
+  })
+  //Only create a timer if we're creating a computer player and there isn't already a timer that exists
+  if (!timer && (blackPlayer.level > 0 || whitePlayer.level > 0)){
+    //Always delay the computer by a second so rendering happens discernably
+    timer = setInterval(playComputer, delay)
+  //If we are changing the computer back to a player and that leaves us with no computer players then clear the timer
+  } else if (timer && !blackPlayer.level && !whitePlayer.level){
+    clearInterval(timer)
+    timer = undefined
+  }
+}
+
+function playComputer(){
+  //Clear the timer if the game is over
+  let currentPlayer = scorekeeper.turn === 'black' ? blackPlayer : whitePlayer
+  
+  if (scorekeeper.gameOver){
+    clearInterval(timer)
+    timer = undefined
+  }
+  //Only use the AI if there's an AI player and it's their turn
+  else if (scorekeeper.turn === currentPlayer.color && currentPlayer.level > 0){
+    console.log('Looking for moves')
+    let bestMove = currentPlayer.computeBestMove(board, scorekeeper)
+    if(bestMove.r !== undefined){
+      let bestMoveSquare = board.gameBoard[bestMove.r][bestMove.c]
+      playMove(bestMoveSquare)
+    }
+    
+  } 
+}
+
+function updateDelay(){
+  delay = delayInputEl.childNodes[1].value*500
+}
+
+function saveSettings(){
+  updateDelay()
+  handlePlayerTypeChange()
 }
 
 function resetGame(){
@@ -373,6 +429,18 @@ function resetGame(){
   scorekeeper = new Scorekeeper()
   //Reset delay slider value to 0
   delayInputEl.childNodes[1].value = 0
+  clearInterval(timer)
+  timer = undefined
+  //Reset player type selector to human level
+  radioInputEls.forEach(inputEl => {
+    //If the input ID starts with a 0 it's the human input
+    if (!(inputEl.id.split('-')[0]*1)){
+      inputEl.checked = true
+    }else {
+      inputEl.checked = false
+    }
+  })
+
   init()
 }
 
@@ -388,7 +456,10 @@ function init() {
   board.getAvailableMoves(scorekeeper.turn)
   //Set initial delay
   delay = delayInputEl.childNodes[1].value
-
+  //Create players
+  blackPlayer = new Player(0, 'black')
+  whitePlayer = new Player(0, 'white')
+  
   render()
 }
 
@@ -401,6 +472,7 @@ function init() {
  */
 function clone(instance) {
   return Object.assign(
+    //Target is a new instance of class
     Object.create(
       // Set the prototype of the new object to the prototype of the instance.
       // Used to allow new object behave like class instance.
