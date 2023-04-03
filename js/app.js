@@ -317,7 +317,19 @@ function renderMessage(){
   messageEl.textContent = scorekeeper.statusMessage
   turnPieceEls.forEach( el => {
     el.classList.remove('black', 'white')
-    el.classList.add(scorekeeper.turn)
+    if(scorekeeper.gameOver){
+      if (scorekeeper.blackScore === scorekeeper.whiteScore){
+        //Set gradient to message pieces in case of tie
+        el.setAttribute('style', `background: rgb(0,0,0);
+        background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(135,135,135,1) 30%, rgba(255,255,255,1) 100%);`)
+      } else {
+        //Otherwise set message pieces to color of winner
+        scorekeeper.blackScore > scorekeeper.whiteScore ? el.classList.add('black') : el.classList.add('white')
+      }
+    } else {
+      el.classList.add(scorekeeper.turn)
+      el.style.border = '0.5px solid black'
+    }
   })
 }
 
@@ -382,7 +394,6 @@ function playComputer(){
   }
   //Only use the AI if there's an AI player and it's their turn
   else if (scorekeeper.turn === currentPlayer.color && currentPlayer.level > 0){
-
     let bestMove = currentPlayer.computeBestMove(board, scorekeeper)
     if(bestMove.r){
       let bestMoveSquare = board.gameBoard[bestMove.r][bestMove.c]
