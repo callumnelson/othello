@@ -197,8 +197,42 @@ class Computer {
   constructor(level){
     this.level = level
   }
-  computeBestMove(board){
-
+  computeBestMove(board, scorekeeper){
+    let bestScore = 0
+    let bestMove = {}
+    board.availableMoves.forEach( move => {
+      console.log('Turn:', scorekeeper.turn)
+      console.log(move.r, move.c)
+      //Make deep copies so we don't mess up the real game board
+      let scorekeeperCopy = clone(scorekeeper)
+      let boardCopy = clone(board)
+      //In order to clone squares in game board, have to loop through
+      let gameBoardCopy = []
+      board.gameBoard.forEach(row => {
+        gameBoardCopy.push(row.map( square => clone(square)))
+      })
+      //Replace gameboard so that it contains squares of class square
+      boardCopy.gameBoard = gameBoardCopy
+      //Get current score to be able to compute change after playing the move
+      let currentScore = scorekeeperCopy.turn === 'black' ? scorekeeperCopy.blackScore : scorekeeperCopy.whiteScore 
+      //Get the move potential move from the copy of the game board
+      let moveCopyR = move.r
+      let moveCopyC = move.c
+      let moveSquareCopy = boardCopy.gameBoard[moveCopyR][moveCopyC]
+      moveSquareCopy.addPiece(new Piece(moveCopyR, moveCopyC, scorekeeperCopy.turn))
+      boardCopy.flipPieces(moveSquareCopy, scorekeeperCopy.turn)
+      scorekeeperCopy.updateScore(boardCopy.gameBoard)
+      //Compute value of turn and update best move if we found a new best score
+      let turnValue = scorekeeperCopy.turn === 'black' ? scorekeeperCopy.blackScore - currentScore : scorekeeperCopy.whiteScore - currentScore
+      //Update best move if it's better than previous best move
+      if (turnValue > bestScore) {
+        bestMove.r = moveCopyR
+        bestMove.c = moveCopyC
+        bestMove.bestScore = turnValue
+        bestScore = turnValue
+      }
+    })
+    return bestMove
   }
 }
 
@@ -206,6 +240,7 @@ class Computer {
 let board = new Board()
 let scorekeeper = new Scorekeeper()
 let delay
+let computerPlayer = new Computer(1)
 
 /*------------------------ Cached Element References ------------------------*/
 const boardEl = document.getElementById('board')
@@ -353,7 +388,27 @@ function init() {
   board.getAvailableMoves(scorekeeper.turn)
   //Set initial delay
   delay = delayInputEl.childNodes[1].value
+
   render()
+}
+
+//https://gist.github.com/GeorgeGkas/36f7a7f9a9641c2115a11d58233ebed2
+/**
+ * @function
+ * @description Deep clone a class instance.
+ * @param {object} instance The class instance you want to clone.
+ * @returns {object} A new cloned instance.
+ */
+function clone(instance) {
+  return Object.assign(
+    Object.create(
+      // Set the prototype of the new object to the prototype of the instance.
+      // Used to allow new object behave like class instance.
+      Object.getPrototypeOf(instance),
+    ),
+    // Prevent shallow copies of nested structures like arrays, etc
+    JSON.parse(JSON.stringify(instance)),
+  )
 }
 
 function render(){
@@ -364,3 +419,4 @@ function render(){
 
 init()
 
+//TODO comments above functions like clone
