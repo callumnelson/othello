@@ -631,5 +631,3 @@ function render(){
 }
 
 init()
-
-//TODO comments above functions like clone
