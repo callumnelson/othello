@@ -1,6 +1,8 @@
 /*-------------------------------- Constants --------------------------------*/
 const numRows = 10
 const numCols = 10
+const pieceSound = new Audio('../assets/placePiece.m4a')
+pieceSound.volume = 0.25
 
 /*-------------------------------- Classes ----------------------------------*/
 /**
@@ -435,6 +437,10 @@ function renderScore(){
  * @param {Square} Square instance that should be played upon
  */
 function playMove(square) {
+  //Don't play a sound if it's two computers with no delay
+  if (!(blackPlayer.level && whitePlayer.level && !delay)){
+    pieceSound.play()
+  }
   let newPiece = new Piece(square.r, square.c, scorekeeper.turn)
   square.addPiece(newPiece)
   board.clearAvailableMoves()
