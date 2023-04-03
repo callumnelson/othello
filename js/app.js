@@ -197,7 +197,7 @@ class Computer {
   constructor(level){
     this.level = level
   }
-  computeMove(board){
+  computeBestMove(board){
 
   }
 }
@@ -215,6 +215,7 @@ const whiteScoreEl = document.getElementById('white-score')
 const resetBtnEl = document.getElementById('reset-button')
 const turnPieceEls = document.querySelectorAll('.turn-piece')
 const delayInputEl = document.getElementById('delay-input')
+
 
 /*----------------------------- Event Listeners -----------------------------*/
 
@@ -363,4 +364,3 @@ function render(){
 
 init()
 
-//TODO make score a black vs. white pie chart using bootstrap

@@ -107,6 +107,7 @@ button:hover {
 #score-wrapper {
   display: flex;
   justify-content: space-between;
+  gap: 40px;
   width: 100%;
 }
 
@@ -124,6 +125,22 @@ button:hover {
 #white-score-wrapper > p, #black-score-wrapper > p {
   font-size: 30px;
   margin: 0;
+  border: 1px solid black;
+  width: 6vmin;
+  height: 6vmin;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#white-score-wrapper > p {
+  background-color: white;
+}
+
+#black-score-wrapper > p {
+  background-color: black;
+  color: white;
 }
 
 .header {
