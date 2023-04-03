@@ -147,9 +147,14 @@ class Board {
         }
       })
     })
-    this.prevAvailableMoves = this.availableMoves
     this.availableMoves = moves
   }
+  //Clear available moves to disable user input in between turns where there's a delay
+  clearAvailableMoves() {
+    this.prevAvailableMoves = this.availableMoves
+    this.availableMoves = []
+  }
+
   checkForSandwich(square, dir, turn) {
     //We know we're receiving a square that is the opposite color of turn
     //We want to check the status of the next square in direction dir
@@ -288,6 +293,7 @@ function handleSquareClick(evt){
     let clickedSquare = board.gameBoard[r][c]
     let newPiece = new Piece(clickedSquare.r, clickedSquare.c, scorekeeper.turn)
     clickedSquare.addPiece(newPiece)
+    board.clearAvailableMoves()
     render()
     setTimeout(() => {
       board.flipPieces(clickedSquare, scorekeeper.turn)
