@@ -370,27 +370,6 @@ function handleSquareClick(evt){
   }
 }
 
-function handlePlayerTypeChange() {
-  //Loop through radio inputs to get currently selected player type
-  radioInputEls.forEach(inputEl => {
-    let pColor = inputEl.id.split('-')[1]
-    if (inputEl.checked) {
-      //Coerce level to number
-      pColor === 'black' ? blackPlayer.level = inputEl.id.split('-')[0]*1 : whitePlayer.level = inputEl.id.split('-')[0]*1
-    }
-  })
-  //Only create a timer if we're creating a computer player and there isn't already a timer that exists
-  if (!timer && (blackPlayer.level > 0 || whitePlayer.level > 0)){
-    //Always delay the computer by a second so rendering happens discernably
-    //TODO figure out a way to update the delay after it was passed to the initial call
-    timer = setInterval(playComputer, delay)
-  //If we are changing the computer back to a player and that leaves us with no computer players then clear the timer
-  } else if (timer && !blackPlayer.level && !whitePlayer.level){
-    clearInterval(timer)
-    timer = undefined
-  }
-}
-
 function playComputer(){
   //Clear the timer if the game is over
   let currentPlayer = scorekeeper.turn === 'black' ? blackPlayer : whitePlayer
@@ -409,6 +388,30 @@ function playComputer(){
     }
     
   } 
+}
+
+function handlePlayerTypeChange() {
+  //Loop through radio inputs to get currently selected player type
+  radioInputEls.forEach(inputEl => {
+    let pColor = inputEl.id.split('-')[1]
+    if (inputEl.checked) {
+      //Coerce level to number
+      pColor === 'black' ? blackPlayer.level = inputEl.id.split('-')[0]*1 : whitePlayer.level = inputEl.id.split('-')[0]*1
+    }
+  })
+  //If there's already a timer, reinitiate the interval with the new delay value
+  if (timer && (blackPlayer.level > 0 || whitePlayer.level > 0)){
+    clearInterval(timer)
+    timer = setInterval(playComputer, delay)
+  //Create a timer if we're creating a computer player and there isn't already a timer that exists
+  } else if (!timer && (blackPlayer.level > 0 || whitePlayer.level > 0)){
+    //Always delay the computer by a second so rendering happens discernably
+    timer = setInterval(playComputer, delay)
+  //If we are changing the computer back to a player and that leaves us with no computer players then clear the timer
+  } else if (timer && !blackPlayer.level && !whitePlayer.level){
+    clearInterval(timer)
+    timer = undefined
+  }
 }
 
 function updateDelay(){
