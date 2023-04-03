@@ -1,6 +1,6 @@
 /*-------------------------------- Constants --------------------------------*/
-const numRows = 10
-const numCols = 10
+const numRows = 6
+const numCols = 6
 
 /*-------------------------------- Classes ----------------------------------*/
 class Square {
@@ -339,35 +339,39 @@ function renderScore(){
 }
 
 function playMove(square) {
+  console.log('Current turn:', scorekeeper.turn)
+  console.log('Available moves:', board.availableMoves)
+  console.log('Previous moves:', board.prevAvailableMoves)
   let newPiece = new Piece(square.r, square.c, scorekeeper.turn)
-    square.addPiece(newPiece)
-    board.clearAvailableMoves()
+  square.addPiece(newPiece)
+  board.clearAvailableMoves()
+  render()
+  setTimeout(() => {
+    board.flipPieces(square, scorekeeper.turn)
+    scorekeeper.switchTurn()
+    scorekeeper.setMessage()
+    scorekeeper.updateScore(board.gameBoard)
     render()
     setTimeout(() => {
-      board.flipPieces(square, scorekeeper.turn)
-      scorekeeper.switchTurn()
-      scorekeeper.setMessage()
-      scorekeeper.updateScore(board.gameBoard)
+      board.getAvailableMoves(scorekeeper.turn)
+      scorekeeper.checkGameOver(board)
       render()
-      setTimeout(() => {
-        board.getAvailableMoves(scorekeeper.turn)
-        scorekeeper.checkGameOver(board)
-        render()
-        //If there aren't available moves, switch turns immediately
-        if(!board.availableMoves.length) {
-          setTimeout(() => {
-            scorekeeper.switchTurn()
-            scorekeeper.setMessage()
-            board.getAvailableMoves(scorekeeper.turn)
-            //Check if game is over because both players have no available moves
-            scorekeeper.checkGameOver(board)
-            //Need to set the message again if the game is over
-            scorekeeper.setMessage()
-            render()
-          }, delay)
-        }
-      }, delay)
+      //If there aren't available moves, switch turns immediately
+      if(!board.availableMoves.length) {
+        setTimeout(() => {
+          board.clearAvailableMoves()
+          scorekeeper.switchTurn()
+          scorekeeper.setMessage()
+          board.getAvailableMoves(scorekeeper.turn)
+          //Check if game is over because both players have no available moves
+          scorekeeper.checkGameOver(board)
+          //Need to set the message again if the game is over
+          scorekeeper.setMessage()
+          render()
+        }, delay)
+      }
     }, delay)
+  }, delay)
 }
 
 function handleSquareClick(evt){
@@ -385,9 +389,8 @@ function handleSquareClick(evt){
 }
 
 function playComputer(){
+  let currentPlayer = scorekeeper.turn === 'black' ? blackPlayer : whitePlayer  
   //Clear the timer if the game is over
-  let currentPlayer = scorekeeper.turn === 'black' ? blackPlayer : whitePlayer
-  
   if (scorekeeper.gameOver){
     clearInterval(timer)
     timer = undefined
