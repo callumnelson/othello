@@ -83,7 +83,7 @@ button {
 
 #message-wrapper > p {
   margin: 4px 0 8px 0;
-  font-size: 24px;
+  font-size: 4vmin;
 }
 
 #game-wrapper {
@@ -150,11 +150,14 @@ button {
 
 #white-score-wrapper > p {
   background-color: white;
+  margin:0;
+  padding:0 0 8px 0;
 }
 
 #black-score-wrapper > p {
   background-color: black;
   color: white;
+  padding:0 0 8px 0;
 }
 
 .header {
