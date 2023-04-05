@@ -37,6 +37,6 @@ The player with the most pieces of their color wins and ties are possible. The c
 - [x] Implement minimax algorithm up to three levels of recursion
 - [x] Add sound effects for pieces being played
 - [x] Additional styling to add to Shakespearean theme
-- [] Add animation to pieces when they are flipped
-- [] Mobile friendly
-- [] Dark/light mode toggle
+- [ ] Add animation to pieces when they are flipped
+- [ ] Mobile friendly
+- [ ] Dark/light mode toggle
