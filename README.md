@@ -10,17 +10,25 @@ The player with the most pieces of their color wins and ties are possible. The c
 
 ## [Play the game here](https://shakespearean-othello.netlify.app/)
 
-### Title
+## Technologies used 💻
 
-### Getting Started
+* CSS
+* JavaScript
+* HTML
+* Git
+* Netlify
 
-### Attributions
-Script from [MIT via Shakespeare](http://shakespeare.mit.edu/othello/full.html)
-Attribution for minimax 
-Board weights [Washington University](https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/O-Thell-Us/Othellus.pdf)
-End game where all pieces are black [YT](https://www.youtube.com/watch?v=6ehiWOSp_wk&ab_channel=SAWADYYY) 
-End game where neither player can move [YT](https://www.youtube.com/watch?v=B2RKnhTrbTs&ab_channel=BelgianOthelloAssociation)
+## Attributions
+* Othello utilizes the pacifico font family which can be accessed [here](https://fonts.google.com/specimen/Pacifico)
 
-### Technologies Used
+* Passages from the original Othello script, written by William Shakespeare, found [here](http://shakespeare.mit.edu/othello/full.html)
+
+* Minimax algorithm explanation and pseudocode from Amina A. Aljubran [here](http://cs.indstate.edu/~aaljubran/paper.pdf)
+
+* Recommended minimax board weights from [Washington University](https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/O-Thell-Us/Othellus.pdf)
+
+* Fastest path to endgame with all black pieces. Used to test engame logic [YT](https://www.youtube.com/watch?v=6ehiWOSp_wk&ab_channel=SAWADYYY) 
+
+* Path to endgame where neither player has a valid move. Used to test endgame logic [YT](https://www.youtube.com/watch?v=B2RKnhTrbTs&ab_channel=BelgianOthelloAssociation)
 
 ### Next Steps
