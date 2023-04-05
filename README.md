@@ -43,6 +43,7 @@ The game will default to human vs. human with a 0.5 second delay for rendering t
 - [x] Implement minimax algorithm up to three levels of recursion
 - [x] Add sound effects for pieces being played
 - [x] Additional styling to add to Shakespearean theme
+- [x] Help modal with gameplay instructions
 - [ ] Add animation to pieces when they are flipped
 - [ ] Mobile friendly
 - [ ] Dark/light mode toggle
