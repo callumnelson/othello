@@ -315,7 +315,7 @@ input[type="range"]:hover {
 
 .modal-wrapper {
   background-color: rgb(240, 240, 240);
-  margin: 25% auto; 
+  margin: 5% auto; 
   padding: 24px;
   border: 1px solid black;
   width: 70%;
