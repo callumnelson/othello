@@ -1,6 +1,6 @@
 # Shakespearean Othello
 
-
+An Elizabethan era spin on the classic board game, Othello. 
 
 
 ### Title

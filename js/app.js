@@ -1,7 +1,7 @@
 /*-------------------------------- Constants --------------------------------*/
 const numRows = 10
 const numCols = 10
-const pieceSound = new Audio('../assets/placePiece.m4a')
+const pieceSound = new Audio('../assets/audio/placePiece.m4a')
 pieceSound.volume = 0.25
 
 /*-------------------------------- Classes ----------------------------------*/
