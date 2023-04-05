@@ -390,7 +390,7 @@ class Player {
 /*---------------------------- Variables (state) ----------------------------*/
 let board = new Board()
 let scorekeeper = new Scorekeeper()
-let delay = 0, timer
+let delay, timer
 let blackPlayer, whitePlayer
 
 /*------------------------ Cached Element References ------------------------*/
@@ -504,9 +504,8 @@ function renderScore(){
  * @param {Square} Square instance that should be played upon
  */
 function playMove(square) {
-  //Don't play a sound if it's two computers with no delay
-  
-  if (!(blackPlayer.level && whitePlayer.level && !delay)){
+  //Don't play a sound if it's two computers with minimum delay
+  if (!(blackPlayer.level && whitePlayer.level && delay < 1000)){
     pieceSound.play()
   }
   //Reset the interval so that it won't run until after the timeouts have happened below (ensured by adding a 250ms buffer for computation time / other timer weirdness)
@@ -615,7 +614,7 @@ function updatePlayerType() {
  * @description Update the delay between turns that gets used in the timeout and interval
  */
 function updateDelay(){
-  delay = delayInputEl.childNodes[1].value*500
+  delay = delayInputEl.childNodes[1].value*1000
 }
 /**
  * @function
@@ -642,8 +641,8 @@ function resetGame(){
     //Instantiate new board and scorekeeper and point global vars to them
     board = new Board()
     scorekeeper = new Scorekeeper()
-    //Reset delay slider value to 0
-    delayInputEl.childNodes[1].value = 0
+    //Reset delay slider value to default
+    delayInputEl.childNodes[1].value = 0.5
     //Reset player type selector to human level
     radioInputEls.forEach(inputEl => {
       //If the input ID starts with a 0 it's the human input
@@ -673,7 +672,7 @@ function init() {
   //Find available moves
   board.getAvailableMoves(scorekeeper.turn)
   //Set initial delay
-  delay = delayInputEl.childNodes[1].value
+  delay = delayInputEl.childNodes[1].value*1000
   //Create players
   blackPlayer = new Player(0, 'black')
   whitePlayer = new Player(0, 'white')
