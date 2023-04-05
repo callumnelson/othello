@@ -18,7 +18,7 @@ The player with the most pieces of their color wins and ties are possible. The c
 * Git
 * Netlify
 
-## Attributions
+## Attributions 🤩
 * Othello utilizes the pacifico font family which can be accessed [here](https://fonts.google.com/specimen/Pacifico)
 
 * Passages from the original Othello script, written by William Shakespeare, found [here](http://shakespeare.mit.edu/othello/full.html)
@@ -31,4 +31,12 @@ The player with the most pieces of their color wins and ties are possible. The c
 
 * Path to endgame where neither player has a valid move. Used to test endgame logic [YT](https://www.youtube.com/watch?v=B2RKnhTrbTs&ab_channel=BelgianOthelloAssociation)
 
-### Next Steps
+### Ice Box ⏭️
+
+- [x] Add computer player that selects random move
+- [x] Implement minimax algorithm up to three levels of recursion
+- [x] Add sound effects for pieces being played
+- [x] Additional styling to add to Shakespearean theme
+- [] Add animation to pieces when they are flipped
+- [] Mobile friendly
+- [] Dark/light mode toggle
