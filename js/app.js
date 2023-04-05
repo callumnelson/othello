@@ -726,11 +726,17 @@ function copyGameState(board, scorekeeper) {
   boardCopy.gameBoard = gameBoardCopy
   return [boardCopy, scorekeeperCopy]
 }
-
+/**
+ * @function
+ * @description Show instructions modal
+ */
 function showHelpModal(){
   helpModalEl.style.display = 'block'
 }
-
+/**
+ * @function
+ * @description Hide instructions modal
+ */
 function hideHelpModal(){
   helpModalEl.style.display = 'none'
 }
