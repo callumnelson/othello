@@ -349,12 +349,9 @@ class Player {
     return bestMove
   }
   //MAKE SURE YOU PASS IN COPIES TO THIS FUNCTION
-  getBestMoveMinimax(bCopy, sCopy, depth, turn){ 
+  getBestMoveMinimax(bCopy, sCopy, depth, turn, currPlayer){ 
     sCopy.checkGameOver(bCopy)
-    console.log('Minimax called for', turn, 'with depth', depth)
     if (sCopy.gameOver){
-      console.log('Game is over')
-      console.log(bCopy)
       //If the current player wins: Return high value move
       sCopy.updateScore(bCopy.gameBoard)
       if ((sCopy.blackScore > sCopy.whiteScore && turn === 'black') || (sCopy.blackScore < sCopy.whiteScore && turn === 'white')){
@@ -375,14 +372,13 @@ class Player {
     //If there are no available moves
     if (!bCopy.availableMoves.length){
       //If we're at base case, return low value
-      console.log('There are no available moves')
       if (depth === 1){
         return -99999
       //Otherwise, switch turns and call recursively from opponent's perspective
       }else {
         sCopy.switchTurn()
         bCopy.clearAvailableMoves()
-        return -1 * this.getBestMoveMinimax(bCopy, sCopy, depth - 1, sCopy.turn).value
+        return -1 * this.getBestMoveMinimax(bCopy, sCopy, depth - 1, sCopy.turn, currPlayer).value
       }
     //Otherwise, play every move on the board to test its value
     }else {
@@ -393,7 +389,7 @@ class Player {
       }
       bCopy.availableMoves.forEach( move => {
         // console.log('Playing move for', turn, 'at square', move.r, move.c)
-        let currMove = {r: move.r, c: move.c, value: undefined}
+        let currMove = {r: move.r, c: move.c, value: -99999}
         //Make copy of game state and play move
         let [boardCopy, scorekeeperCopy] = copyGameState(bCopy, sCopy)
         let moveCopyR = move.r
@@ -412,12 +408,15 @@ class Player {
           scorekeeperCopy.switchTurn()
           //Clear available moves before getting them on the next call
           boardCopy.clearAvailableMoves()
-          currMove.value = -1 * this.getBestMoveMinimax(boardCopy, scorekeeperCopy, depth - 1, scorekeeperCopy.turn).value
+          currMove.value = -1 * this.getBestMoveMinimax(boardCopy, scorekeeperCopy, depth - 1, scorekeeperCopy.turn, currPlayer).value
         }
         //See if the currMove's value is better than the previous best Move's value
         if (bestMove.value <= currMove.value) {
           bestMove = currMove
-          // console.log('Best move is now:', bestMove)
+        //If best move is still undefined, set it to currMove to avoid infite endgame loop
+        } else if (bestMove.r === undefined){
+          bestMove.r = currMove.r
+          bestMove.c = currMove.c
         }
       })
       return bestMove
@@ -542,7 +541,6 @@ function renderScore(){
  * @param {Square} Square instance that should be played upon
  */
 function playMove(square) {
-  console.log('Playing move for', scorekeeper.turn, 'at', square)
   //Don't play a sound if it's two computers with no delay
   if (!(blackPlayer.level && whitePlayer.level && !delay)){
     pieceSound.play()
@@ -554,6 +552,7 @@ function playMove(square) {
   // setTimeout(() => {
     board.flipPieces(square, scorekeeper.turn)
     render()
+    //TODO this is where the AI issue is -- once we switch the turn the timer runs before we're able to execute all of this code
     // setTimeout(() => {
       scorekeeper.switchTurn()
       scorekeeper.setMessage()
@@ -611,8 +610,7 @@ function playComputer(){
     
     // let bestMove = currentPlayer.computeBestMove(board, scorekeeper)
     let [bCopy, sCopy] = copyGameState(board, scorekeeper)
-    let bestMove = currentPlayer.getBestMoveMinimax(bCopy, sCopy, currentPlayer.level, scorekeeper.turn)
-    console.log('Computer getting move for', scorekeeper.turn, 'at', bestMove)
+    let bestMove = currentPlayer.getBestMoveMinimax(bCopy, sCopy, currentPlayer.level, scorekeeper.turn, scorekeeper.turn)
     if(bestMove.r){
       let bestMoveSquare = board.gameBoard[bestMove.r][bestMove.c]
       playMove(bestMoveSquare)
