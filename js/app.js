@@ -309,47 +309,13 @@ class Player {
   /**
  * @method
  * @description Given the current board and scorekeeper, creates a deep copy and computes the best move for the current player 
- * @param {Board} Board The current instance of the board
- * @param {Board} Scorekeeper The current instance of the scorekeeper
- * @returns {object} An object containing the coordinates of the best move and move's value (the number of pieces it will net the current player)
- */
-  computeBestMove(board, scorekeeper){
-    let bestScore = 0
-    let bestMove = {}
-    board.availableMoves.forEach( move => {
-      //Make deep copies so we don't mess up the real game board
-      let scorekeeperCopy = clone(scorekeeper)
-      let boardCopy = clone(board)
-      //In order to clone squares in game board, have to loop through
-      let gameBoardCopy = []
-      board.gameBoard.forEach(row => {
-        gameBoardCopy.push(row.map( square => clone(square)))
-      })
-      //Replace gameboard so that it contains squares of class square
-      boardCopy.gameBoard = gameBoardCopy
-      //Get current score to be able to compute change after playing the move
-      let currentScore = scorekeeperCopy.turn === 'black' ? scorekeeperCopy.blackScore : scorekeeperCopy.whiteScore 
-      //Get the move potential move from the copy of the game board
-      let moveCopyR = move.r
-      let moveCopyC = move.c
-      let moveSquareCopy = boardCopy.gameBoard[moveCopyR][moveCopyC]
-      moveSquareCopy.addPiece(new Piece(moveCopyR, moveCopyC, scorekeeperCopy.turn))
-      boardCopy.flipPieces(moveSquareCopy, scorekeeperCopy.turn)
-      scorekeeperCopy.updateScore(boardCopy.gameBoard)
-      //Compute value of turn and update best move if we found a new best score
-      let turnValue = scorekeeperCopy.turn === 'black' ? scorekeeperCopy.blackScore - currentScore : scorekeeperCopy.whiteScore - currentScore
-      //Update best move if it's better than previous best move
-      if (turnValue > bestScore) {
-        bestMove.r = moveCopyR
-        bestMove.c = moveCopyC
-        bestMove.bestScore = turnValue
-        bestScore = turnValue
-      }
-    })
-    return bestMove
-  }
-  //MAKE SURE YOU PASS IN COPIES TO THIS FUNCTION
-  getBestMoveMinimax(bCopy, sCopy, depth, turn, currPlayer){ 
+ * @param {Board} bCopy A deep copy of the board
+ * @param {Scorekeeper} sCopy A deep copy of the scorekeeper
+ * @param number depth The level of the AI / the depth of recursion to use
+ * @param turn the turn of the perspective from which we are calling minimax
+ * @returns {object} An object containing the coordinates of the best move and move's value (based on the board weights)
+*/
+ getBestMoveMinimax(bCopy, sCopy, depth, turn){ 
     sCopy.checkGameOver(bCopy)
     if (sCopy.gameOver){
       //If the current player wins: Return high value move
@@ -377,7 +343,7 @@ class Player {
       }else {
         sCopy.switchTurn()
         bCopy.clearAvailableMoves()
-        return -1 * this.getBestMoveMinimax(bCopy, sCopy, depth - 1, sCopy.turn, currPlayer).value
+        return -1 * this.getBestMoveMinimax(bCopy, sCopy, depth - 1, sCopy.turn).value
       }
     //Otherwise, play every move on the board to test its value
     }else {
@@ -405,7 +371,7 @@ class Player {
           scorekeeperCopy.switchTurn()
           //Clear available moves before getting them on the next call
           boardCopy.clearAvailableMoves()
-          currMove.value = -1 * this.getBestMoveMinimax(boardCopy, scorekeeperCopy, depth - 1, scorekeeperCopy.turn, currPlayer).value
+          currMove.value = -1 * this.getBestMoveMinimax(boardCopy, scorekeeperCopy, depth - 1, scorekeeperCopy.turn).value
         }
         //See if the currMove's value is better than the previous best Move's value
         if (bestMove.value <= currMove.value) {
