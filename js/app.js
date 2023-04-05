@@ -135,6 +135,16 @@ class Board {
     this.availableMoves = []
     this.prevAvailableMoves = []
     this.directions = [[-1,-1], [-1,0], [-1,1], [0, -1], [0,1], [1,-1], [1, 0], [1,1]]
+    this.weights = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 100, -10, 11, 6, 6, 11, -10, 100, 0],
+        [0, -10, -20, 1, 2, 2, 1, -20, -10, 0],
+        [0, 10, 1, 5, 4, 4, 5, 1, 10, 0],
+        [0, 6, 2, 4, 2, 2, 4, 2, 6, 0],
+        [0, 6, 2, 4, 2, 2, 4, 2, 6, 0],
+        [0, 10, 1, 5, 4, 4, 5, 1, 10, 0],
+        [0, -10, -20, 1, 2, 2, 1, -20, -10, 0],
+        [0, 100, -10, 11, 6, 6, 11, -10, 100, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
   }
   /**
    * @method
@@ -235,7 +245,7 @@ class Board {
   /**
    * @method
    * @description Loop through all directions in which there is a sandwich to be made and call flipOneDirection
-   * @param {Square} Square at which to a move was played
+   * @param {Square} Square at which a move was played
    * @param {String} turn The current turn
    */
   flipPieces(square, turn){
@@ -264,6 +274,26 @@ class Board {
     if (nextSquare.piece.color === turn) return
     //Otherwise call flip pieces recursively on the next square
     else return this.flipOneDirection(nextSquare, dir, turn)
+  }
+
+  /**
+   * @method
+   * @description Evaluates board against weights for current player
+   * @param turn The perspective from which to evaluate
+   * @returns eval The sum of board positions * board weights for the given player
+   */
+  evaluateBoard(turn){
+    let res = {white: 0, black: 0}
+    this.weights.forEach( (row, rIdx) => {
+      row.reduce( (acc, curr, cIdx) => {
+        let square = this.gameBoard[rIdx][cIdx]
+        if (square.isOccupied) {
+          acc[square.piece.color] += curr
+        }
+        return acc
+      }, res)
+    })
+    return turn === 'black' ? res['black'] - res['white'] : res['white'] - res['black']
   }
 }
 /**
@@ -318,12 +348,87 @@ class Player {
     })
     return bestMove
   }
+  //MAKE SURE YOU PASS IN COPIES TO THIS FUNCTION
+  getBestMoveMinimax(bCopy, sCopy, depth, turn){ 
+    sCopy.checkGameOver(bCopy)
+    console.log('Minimax called for', turn, 'with depth', depth)
+    if (sCopy.gameOver){
+      console.log('Game is over')
+      console.log(bCopy)
+      //If the current player wins: Return high value move
+      sCopy.updateScore(bCopy.gameBoard)
+      if ((sCopy.blackScore > sCopy.whiteScore && turn === 'black') || (sCopy.blackScore < sCopy.whiteScore && turn === 'white')){
+        return 99999
+      }
+      //Else if the game is over and the current player loses return the lowest value move
+      if ((sCopy.blackScore < sCopy.whiteScore && turn === 'black') || (sCopy.blackScore > sCopy.whiteScore && turn === 'white')){
+        return -99999
+      }
+      //Else if the game is over and it is a tie return a neutral move
+      if (sCopy.blackScore === sCopy.whiteScore){
+        return 0
+      }
+    }
+    //Get the valid moves for the current player
+    bCopy.getAvailableMoves(turn)
+    // console.log('Available moves are:', bCopy.availableMoves)
+    //If there are no available moves
+    if (!bCopy.availableMoves.length){
+      //If we're at base case, return low value
+      console.log('There are no available moves')
+      if (depth === 1){
+        return -99999
+      //Otherwise, switch turns and call recursively from opponent's perspective
+      }else {
+        sCopy.switchTurn()
+        bCopy.clearAvailableMoves()
+        return -1 * this.getBestMoveMinimax(bCopy, sCopy, depth - 1, sCopy.turn).value
+      }
+    //Otherwise, play every move on the board to test its value
+    }else {
+      let bestMove = {
+        r: undefined,
+        c: undefined,
+        value: -99999,
+      }
+      bCopy.availableMoves.forEach( move => {
+        // console.log('Playing move for', turn, 'at square', move.r, move.c)
+        let currMove = {r: move.r, c: move.c, value: undefined}
+        //Make copy of game state and play move
+        let [boardCopy, scorekeeperCopy] = copyGameState(bCopy, sCopy)
+        let moveCopyR = move.r
+        let moveCopyC = move.c
+        let moveSquareCopy = boardCopy.gameBoard[moveCopyR][moveCopyC]
+        moveSquareCopy.addPiece(new Piece(moveCopyR, moveCopyC, scorekeeperCopy.turn))
+        boardCopy.flipPieces(moveSquareCopy, scorekeeperCopy.turn)
+        scorekeeperCopy.updateScore(boardCopy.gameBoard)
+        // printBoard(boardCopy.gameBoard)
+        //If we're at the depth of recursion, evaluate the board
+        if (depth === 1){
+          currMove.value = boardCopy.evaluateBoard(scorekeeperCopy.turn)
+          // console.log('At the depth of recursion and currMove value is', currMove)
+        } else {
+          //We aren't at the depth of recursion yet so we need to call recursively
+          scorekeeperCopy.switchTurn()
+          //Clear available moves before getting them on the next call
+          boardCopy.clearAvailableMoves()
+          currMove.value = -1 * this.getBestMoveMinimax(boardCopy, scorekeeperCopy, depth - 1, scorekeeperCopy.turn).value
+        }
+        //See if the currMove's value is better than the previous best Move's value
+        if (bestMove.value <= currMove.value) {
+          bestMove = currMove
+          // console.log('Best move is now:', bestMove)
+        }
+      })
+      return bestMove
+    }
+  }
 }
 
 /*---------------------------- Variables (state) ----------------------------*/
 let board = new Board()
 let scorekeeper = new Scorekeeper()
-let delay, timer
+let delay = 0, timer
 let blackPlayer, whitePlayer
 
 /*------------------------ Cached Element References ------------------------*/
@@ -437,6 +542,7 @@ function renderScore(){
  * @param {Square} Square instance that should be played upon
  */
 function playMove(square) {
+  console.log('Playing move for', scorekeeper.turn, 'at', square)
   //Don't play a sound if it's two computers with no delay
   if (!(blackPlayer.level && whitePlayer.level && !delay)){
     pieceSound.play()
@@ -445,19 +551,19 @@ function playMove(square) {
   square.addPiece(newPiece)
   board.clearAvailableMoves()
   render()
-  setTimeout(() => {
+  // setTimeout(() => {
     board.flipPieces(square, scorekeeper.turn)
-    scorekeeper.switchTurn()
-    scorekeeper.setMessage()
-    scorekeeper.updateScore(board.gameBoard)
     render()
-    setTimeout(() => {
+    // setTimeout(() => {
+      scorekeeper.switchTurn()
+      scorekeeper.setMessage()
+      scorekeeper.updateScore(board.gameBoard)
       board.getAvailableMoves(scorekeeper.turn)
       scorekeeper.checkGameOver(board)
       render()
       //If there aren't available moves, switch turns immediately
       if(!board.availableMoves.length) {
-        setTimeout(() => {
+        // setTimeout(() => {
           board.clearAvailableMoves()
           scorekeeper.switchTurn()
           scorekeeper.setMessage()
@@ -467,10 +573,10 @@ function playMove(square) {
           //Need to set the message again if the game is over
           scorekeeper.setMessage()
           render()
-        }, delay)
+        // }, delay)
       }
-    }, delay)
-  }, delay)
+    // }, delay)
+  // }, delay)
 }
 /**
  * @function
@@ -502,7 +608,11 @@ function playComputer(){
   }
   //Only use the AI if there's an AI player and it's their turn
   else if (scorekeeper.turn === currentPlayer.color && currentPlayer.level > 0){
-    let bestMove = currentPlayer.computeBestMove(board, scorekeeper)
+    
+    // let bestMove = currentPlayer.computeBestMove(board, scorekeeper)
+    let [bCopy, sCopy] = copyGameState(board, scorekeeper)
+    let bestMove = currentPlayer.getBestMoveMinimax(bCopy, sCopy, currentPlayer.level, scorekeeper.turn)
+    console.log('Computer getting move for', scorekeeper.turn, 'at', bestMove)
     if(bestMove.r){
       let bestMoveSquare = board.gameBoard[bestMove.r][bestMove.c]
       playMove(bestMoveSquare)
@@ -526,11 +636,10 @@ function updatePlayerType() {
   //If there's already a timer, reinitiate the interval with the new delay value
   if (timer && (blackPlayer.level > 0 || whitePlayer.level > 0)){
     clearInterval(timer)
-    timer = setInterval(playComputer, delay)
+    timer = setInterval(playComputer, delay + 100)
   //Create a timer if we're creating a computer player and there isn't already a timer that exists
   } else if (!timer && (blackPlayer.level > 0 || whitePlayer.level > 0)){
-    //Always delay the computer by a second so rendering happens discernably
-    timer = setInterval(playComputer, delay)
+    timer = setInterval(playComputer, delay + 100)
   //If we are changing the computer back to a player and that leaves us with no computer players then clear the timer
   } else if (timer && !blackPlayer.level && !whitePlayer.level){
     clearInterval(timer)
@@ -624,6 +733,39 @@ function clone(instance) {
     // Prevent shallow copies of nested structures like arrays, etc
     JSON.parse(JSON.stringify(instance)),
   )
+}
+/**
+ * @function
+ * @description Clone the current game stane
+ * @param {Board} board The current instance of the game board class
+ * @param {Scorekeeper} scorekeeper The current instance of the scorekeeper
+ * @returns {Board} boardCopy A new cloned instance of the board
+ * @returns {Board} A new cloned instance of the scorekeeeper
+ */
+function copyGameState(board, scorekeeper) {
+  let scorekeeperCopy = clone(scorekeeper)
+  let boardCopy = clone(board)
+  //In order to clone squares in game board, have to loop through
+  let gameBoardCopy = []
+  board.gameBoard.forEach(row => {
+    gameBoardCopy.push(row.map( square => clone(square)))
+  })
+  //Replace gameboard so that it contains squares of class square
+  boardCopy.gameBoard = gameBoardCopy
+  return [boardCopy, scorekeeperCopy]
+}
+
+//TODO delete after done testing
+function printBoard(gameBoard) {
+  let printed = []
+  gameBoard.forEach( row => {
+    let printedRow = []
+    row.forEach( square => {
+      square.isOccupied ? printedRow.push(square.piece.color[0]) : printedRow.push(' ')
+    })
+    printed.push(printedRow)
+  })
+  console.log('Now the board looks like:', printed)
 }
 
 /**
