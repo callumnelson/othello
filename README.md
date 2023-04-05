@@ -2,7 +2,7 @@
 
 ![Game screenshot](https://github.com/callumnelson/othello/blob/main/assets/images/screenshot.png)
 
-An Elizabethan era spin on the classic board game, Othello. Valid moves can be played anywhere that would create a "sandwich" by outflanking one or more of the opponent's pieces in one or more directions. Black always moves first. If a player cannot play, they must skip their turn. If a player can play, they must play. The game ends when one of the following conditions is met:
+Black always moves first. An Elizabethan era spin on the classic board game, Othello. Valid moves can be played anywhere that would create a "sandwich" by outflanking one or more of the opponent's pieces in one or more directions.  If a player cannot play, they must skip their turn. If a player can play, they must play. The game ends when one of the following conditions is met:
 1. The board is full and there are no more available squares
 2. Neither player has a valid move
 

@@ -406,6 +406,9 @@ const delayInputEl = document.getElementById('delay-input')
 const pTypeEl = document.getElementById('player-type-wrapper')
 //Inputs for resetting
 const radioInputEls = document.querySelectorAll('input[type=radio]')
+const helpEl = document.getElementById('help-icon')
+const helpModalEl = document.getElementById('help-modal')
+const closeModalEl = document.getElementById('close-modal')
 
 
 /*----------------------------- Event Listeners -----------------------------*/
@@ -413,6 +416,8 @@ const radioInputEls = document.querySelectorAll('input[type=radio]')
 boardEl.addEventListener('click', handleSquareClick)
 resetBtnEl.addEventListener('click', resetGame)
 saveBtnEl.addEventListener('click', saveSettings)
+helpEl.addEventListener('click', showHelpModal)
+closeModalEl.addEventListener('click', hideHelpModal)
 
 /*-------------------------------- Functions --------------------------------*/
 /**
@@ -720,6 +725,14 @@ function copyGameState(board, scorekeeper) {
   //Replace gameboard so that it contains squares of class square
   boardCopy.gameBoard = gameBoardCopy
   return [boardCopy, scorekeeperCopy]
+}
+
+function showHelpModal(){
+  helpModalEl.style.display = 'block'
+}
+
+function hideHelpModal(){
+  helpModalEl.style.display = 'none'
 }
 
 /**

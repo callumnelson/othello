@@ -92,8 +92,27 @@
         </div>
         <button id="save-button">Save Settings</button>
         <button id="reset-button">Reset Game</button>
+        <div id="help-icon">?</div>
       </div>
     </section>
   </main>
+  <div id="help-modal" class="modal">
+    <div class="modal-wrapper">
+      <div class="modal-header">
+        <span id="close-modal" class="close">&times;</span>
+      </div>
+      <div class="modal-content">
+        <h2>How to play</h2>
+        <p>Black always moves first. Valid moves can be played anywhere that would create a "sandwich" by outflanking one or more of the opponent's pieces in one or more directions. These valid moves are highlighted on the board for each player at the start of their turn </p>
+        <h2>Rules</h2>
+        <ul class="rules">
+          <li>A player must play on her turn if she has a valid move</li>
+          <li>If she cannot play, her turn will be skipped</li>
+        </ul>
+        <h2>Hints</h2>
+        <p>The edges of the board are more valuable than the center and the corners are the most valuable. Players should try to capture them and avoid helping the other player to capture them. </p>
+      </div>
+    </div>
+    </div>
 </body>
 </html>
