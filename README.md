@@ -1,8 +1,10 @@
 # Shakespearean Othello 
 
+An Elizabethan era spin on the classic board game, Othello. 
+
 ![Game screenshot](https://github.com/callumnelson/othello/blob/main/assets/images/screenshot.png)
 
-Black always moves first. An Elizabethan era spin on the classic board game, Othello. Valid moves can be played anywhere that would create a "sandwich" by outflanking one or more of the opponent's pieces in one or more directions.  If a player cannot play, they must skip their turn. If a player can play, they must play. The game ends when one of the following conditions is met:
+Black always moves first. Valid moves can be played anywhere that would create a "sandwich" by outflanking one or more of the opponent's pieces in one or more directions.  If a player cannot play, they must skip their turn. If a player can play, they must play. The game ends when one of the following conditions is met:
 1. The board is full and there are no more available squares
 2. Neither player has a valid move
 
@@ -12,7 +14,7 @@ The player with the most pieces of their color wins and ties are possible. The c
 
 ### [Play the game here](https://shakespearean-othello.netlify.app/)
 
-The game will default to human vs. human with a 0.5 second delay for rendering turns. If you wish to play the computer or have a computer vs. computer match, select the settings and click "Save Settings". If you have designated a computer player to play with black pieces, the game will automatically start when "Save Settings" is pressed. 
+The game will default to human vs. human with a 0.5 second delay for rendering turns. If you wish to play the computer or have a computer vs. computer match, select the appropriate settings and click "Save Settings". If you have designated a computer player to play with black pieces, the game will automatically start after "Save Settings" is pressed.
 
 ## Technologies used 💻
 
