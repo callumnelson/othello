@@ -1,6 +1,7 @@
-# Othello
+# Shakespearean Othello
 
-### Screenshot
+
+
 
 ### Title
 

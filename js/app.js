@@ -368,7 +368,6 @@ class Player {
     }
     //Get the valid moves for the current player
     bCopy.getAvailableMoves(turn)
-    // console.log('Available moves are:', bCopy.availableMoves)
     //If there are no available moves
     if (!bCopy.availableMoves.length){
       //If we're at base case, return low value
@@ -388,7 +387,6 @@ class Player {
         value: -99999,
       }
       bCopy.availableMoves.forEach( move => {
-        // console.log('Playing move for', turn, 'at square', move.r, move.c)
         let currMove = {r: move.r, c: move.c, value: -99999}
         //Make copy of game state and play move
         let [boardCopy, scorekeeperCopy] = copyGameState(bCopy, sCopy)
@@ -402,7 +400,6 @@ class Player {
         //If we're at the depth of recursion, evaluate the board
         if (depth === 1){
           currMove.value = boardCopy.evaluateBoard(scorekeeperCopy.turn)
-          // console.log('At the depth of recursion and currMove value is', currMove)
         } else {
           //We aren't at the depth of recursion yet so we need to call recursively
           scorekeeperCopy.switchTurn()
@@ -542,18 +539,23 @@ function renderScore(){
  */
 function playMove(square) {
   //Don't play a sound if it's two computers with no delay
+  
   if (!(blackPlayer.level && whitePlayer.level && !delay)){
     pieceSound.play()
   }
+  //Reset the interval so that it won't run until after the timeouts have happened below (ensured by adding a 250ms buffer for computation time / other timer weirdness)
+  clearInterval(timer)
+  timer = setInterval(playComputer, delay+250)
+  
+  //Instantiate a new piece at the square that is being played
   let newPiece = new Piece(square.r, square.c, scorekeeper.turn)
   square.addPiece(newPiece)
   board.clearAvailableMoves()
   render()
-  // setTimeout(() => {
+  setTimeout(() => {
     board.flipPieces(square, scorekeeper.turn)
     render()
-    //TODO this is where the AI issue is -- once we switch the turn the timer runs before we're able to execute all of this code
-    // setTimeout(() => {
+    setTimeout(() => {
       scorekeeper.switchTurn()
       scorekeeper.setMessage()
       scorekeeper.updateScore(board.gameBoard)
@@ -562,7 +564,7 @@ function playMove(square) {
       render()
       //If there aren't available moves, switch turns immediately
       if(!board.availableMoves.length) {
-        // setTimeout(() => {
+        setTimeout(() => {
           board.clearAvailableMoves()
           scorekeeper.switchTurn()
           scorekeeper.setMessage()
@@ -572,10 +574,10 @@ function playMove(square) {
           //Need to set the message again if the game is over
           scorekeeper.setMessage()
           render()
-        // }, delay)
+        }, delay/3)
       }
-    // }, delay)
-  // }, delay)
+    }, delay/3)
+  }, delay/3)
 }
 /**
  * @function
@@ -607,7 +609,6 @@ function playComputer(){
   }
   //Only use the AI if there's an AI player and it's their turn
   else if (scorekeeper.turn === currentPlayer.color && currentPlayer.level > 0){
-    
     // let bestMove = currentPlayer.computeBestMove(board, scorekeeper)
     let [bCopy, sCopy] = copyGameState(board, scorekeeper)
     let bestMove = currentPlayer.getBestMoveMinimax(bCopy, sCopy, currentPlayer.level, scorekeeper.turn, scorekeeper.turn)
@@ -615,8 +616,7 @@ function playComputer(){
       let bestMoveSquare = board.gameBoard[bestMove.r][bestMove.c]
       playMove(bestMoveSquare)
     }
-    
-  } 
+  }
 }
 /**
  * @function
@@ -634,10 +634,10 @@ function updatePlayerType() {
   //If there's already a timer, reinitiate the interval with the new delay value
   if (timer && (blackPlayer.level > 0 || whitePlayer.level > 0)){
     clearInterval(timer)
-    timer = setInterval(playComputer, delay + 100)
+    timer = setInterval(playComputer, delay+250)
   //Create a timer if we're creating a computer player and there isn't already a timer that exists
   } else if (!timer && (blackPlayer.level > 0 || whitePlayer.level > 0)){
-    timer = setInterval(playComputer, delay + 100)
+    timer = setInterval(playComputer, delay+250)
   //If we are changing the computer back to a player and that leaves us with no computer players then clear the timer
   } else if (timer && !blackPlayer.level && !whitePlayer.level){
     clearInterval(timer)
@@ -664,28 +664,32 @@ function saveSettings(){
  * @description Reset the game it its initial state when the user clicks the reset game button
  */
 function resetGame(){
-  //Clear the GUI 
-  while (boardEl.firstChild) {
-    boardEl.removeChild(boardEl.firstChild);
-  }
-  //Instantiate new board and scorekeeper and point global vars to them
-  board = new Board()
-  scorekeeper = new Scorekeeper()
-  //Reset delay slider value to 0
-  delayInputEl.childNodes[1].value = 0
+  //Stop the computers from playing
   clearInterval(timer)
   timer = undefined
-  //Reset player type selector to human level
-  radioInputEls.forEach(inputEl => {
-    //If the input ID starts with a 0 it's the human input
-    if (!(inputEl.id.split('-')[0]*1)){
-      inputEl.checked = true
-    }else {
-      inputEl.checked = false
+  //Set a timeout to wait for state to settle if we're in the middle of a state change before resetting everything else
+  setTimeout(() => {
+    //Clear the GUI 
+    while (boardEl.firstChild) {
+      boardEl.removeChild(boardEl.firstChild);
     }
-  })
-
-  init()
+    //Instantiate new board and scorekeeper and point global vars to them
+    board = new Board()
+    scorekeeper = new Scorekeeper()
+    //Reset delay slider value to 0
+    delayInputEl.childNodes[1].value = 0
+    //Reset player type selector to human level
+    radioInputEls.forEach(inputEl => {
+      //If the input ID starts with a 0 it's the human input
+      if (!(inputEl.id.split('-')[0]*1)){
+        inputEl.checked = true
+      }else {
+        inputEl.checked = false
+      }
+    })
+  
+    init()
+  }, 100)
 }
 
 /**
@@ -751,19 +755,6 @@ function copyGameState(board, scorekeeper) {
   //Replace gameboard so that it contains squares of class square
   boardCopy.gameBoard = gameBoardCopy
   return [boardCopy, scorekeeperCopy]
-}
-
-//TODO delete after done testing
-function printBoard(gameBoard) {
-  let printed = []
-  gameBoard.forEach( row => {
-    let printedRow = []
-    row.forEach( square => {
-      square.isOccupied ? printedRow.push(square.piece.color[0]) : printedRow.push(' ')
-    })
-    printed.push(printedRow)
-  })
-  console.log('Now the board looks like:', printed)
 }
 
 /**
