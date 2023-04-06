@@ -94,8 +94,7 @@ button {
   align-items: center;
   /* height of window minus height of header and message */
   height: calc(100vh - 125px);
-  margin: 0 0 0 232px;
-  padding: 0;
+  padding: 0 0 0 232px;
 }
 
 #settings-wrapper {
@@ -104,8 +103,7 @@ button {
   justify-content: start;
   gap: 8px;
   align-items: center;
-  background: rgb(2,0,36);
-  background: linear-gradient(90deg, rgb(153, 153, 153) 0%, rgb(244, 244, 244) 100%);
+  background: rgb(208, 208, 208);
   height: 100%;
   padding: 0 16px;
   margin: 0;
@@ -226,7 +224,7 @@ fieldset {
 }
 
 .edge {
-  background-color: rgb(103, 10, 10);
+  background-color: rgb(103, 10, 10, 1);
 }
 
 #s0-0, #s0-9, #s9-0, #s9-9 {
@@ -236,11 +234,11 @@ fieldset {
 }
 
 .not-edge {
-  background-color: rgb(1, 71, 3);
+  background-color: rgb(1, 71, 3, 1);
 }
 
 .available {
-  background-color: rgb(1, 71, 3, 0.15);
+  background-color: rgba(187, 205, 188, 1);
 }
 
 .available:hover {
