@@ -34,8 +34,8 @@ Per [Wikipedia](https://en.wikipedia.org/wiki/Minimax), the Minimax algorithm is
 * Passages from the original Othello script, written by William Shakespeare, found [here](http://shakespeare.mit.edu/othello/full.html)
 * Minimax algorithm explanation and pseudocode from Amina A. Aljubran [here](http://cs.indstate.edu/~aaljubran/paper.pdf)
 * Recommended minimax board weights from [Washington University](https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/O-Thell-Us/Othellus.pdf)
-* Fastest path to an endgame with all black pieces. Used to test endgame logic [YT](https://www.youtube.com/watch?v=6ehiWOSp_wk&ab_channel=SAWADYYY) 
-* Path to an endgame where neither player has a valid move. Used to test endgame logic [YT](https://www.youtube.com/watch?v=B2RKnhTrbTs&ab_channel=BelgianOthelloAssociation)
+* Fastest path to an endgame with all black pieces [here](https://www.youtube.com/watch?v=6ehiWOSp_wk&ab_channel=SAWADYYY). Used to test endgame logic  
+* Path to an endgame where neither player has a valid move [here](https://www.youtube.com/watch?v=B2RKnhTrbTs&ab_channel=BelgianOthelloAssociation). Used to test endgame logic 
 * Comedy and drama masks downloaded from [here](https://pixabay.com/vectors/drama-comedy-and-tragedy-theater-312318/)
 
 ### Ice Box ⏭️
