@@ -47,6 +47,7 @@ Per [Wikipedia](https://en.wikipedia.org/wiki/Minimax), the Minimax algorithm is
     - Path to an endgame where neither player has a valid move [here](https://www.youtube.com/watch?v=B2RKnhTrbTs&ab_channel=BelgianOthelloAssociation)
 * Comedy and drama masks downloaded from [here](https://pixabay.com/vectors/drama-comedy-and-tragedy-theater-312318/)
 * The unbelievably helpful [cssportal](https://www.cssportal.com/style-input-range/) which helped with formatting input ranges
+* Pattern for game background from [here](https://heropatterns.com/)
 
 ## Next Steps (Ice Box) ⏭️
 
