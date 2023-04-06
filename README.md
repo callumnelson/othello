@@ -36,6 +36,7 @@ Per [Wikipedia](https://en.wikipedia.org/wiki/Minimax), the Minimax algorithm is
 * Recommended minimax board weights from [Washington University](https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/O-Thell-Us/Othellus.pdf)
 * Fastest path to an endgame with all black pieces. Used to test endgame logic [YT](https://www.youtube.com/watch?v=6ehiWOSp_wk&ab_channel=SAWADYYY) 
 * Path to an endgame where neither player has a valid move. Used to test endgame logic [YT](https://www.youtube.com/watch?v=B2RKnhTrbTs&ab_channel=BelgianOthelloAssociation)
+* Comedy and drama masks downloaded from [here](https://pixabay.com/vectors/drama-comedy-and-tragedy-theater-312318/)
 
 ### Ice Box ⏭️
 
