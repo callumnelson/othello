@@ -1,4 +1,4 @@
-# Shakespearean Othello 
+# Shakespearean Othello [Play here](https://shakespearean-othello.netlify.app/)
 
 An Elizabethan-era spin on the classic board game, Othello. 
 
@@ -11,8 +11,6 @@ Black always moves first. Valid moves can be played anywhere that would create a
 The player with the most pieces of their color wins and ties are possible. The computer player utilizes a minimax algorithm with up to three levels of recursion to determine the best move available to it. Challenge her if you dare!
 
 ## Getting started 🏁
-
-### [Play the game here](https://shakespearean-othello.netlify.app/)
 
 The game will default to human vs. human with a 0.5-second delay for rendering turns. If you wish to play the computer or have a computer vs. computer match, select the appropriate settings and click "Save Settings". If you have designated a computer player to play with black pieces, the game will automatically start after "Save Settings" is pressed.
 
