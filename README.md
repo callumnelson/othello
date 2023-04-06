@@ -54,6 +54,7 @@ Per [Wikipedia](https://en.wikipedia.org/wiki/Minimax), the Minimax algorithm is
 - [x] Add sound effects for pieces being played
 - [x] Additional styling to add to the Shakespearean theme
 - [x] Help modal with gameplay instructions
+- [ ] Add pseudo-randomness to AI given multiple moves of equivalent value
 - [ ] Add animation to pieces when they are flipped
 - [ ] Mobile friendly
 - [ ] Dark/light mode toggle
