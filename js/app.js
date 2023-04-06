@@ -89,7 +89,6 @@ class Scorekeeper {
     let bScore = 0
     let wScore = 0
     let nPieces = 0
-    //TODO turn this into reduce with an object for each score + total
     gameBoard.forEach( row => {
       row.forEach( square => {
         if (square.isOccupied){
@@ -429,7 +428,7 @@ function createBoard() {
     row.forEach(square => {
       let squareEl = document.createElement('div')
       squareEl.className = `board-square ${square.isEdge? 'edge' : 'not-edge'}`
-      squareEl.id = `${square.r},${square.c}`
+      squareEl.id = `s${square.r}-${square.c}`
       boardEl.appendChild(squareEl)
       if (square.isOccupied) {
         let pieceEl = document.createElement('div')
@@ -446,7 +445,7 @@ function createBoard() {
 function renderBoard() {
   board.gameBoard.forEach( row => {
     row.forEach( square => {
-      let sqElId = `${square.r},${square.c}`
+      let sqElId = `s${square.r}-${square.c}`
       let sqEl = document.getElementById(sqElId)
       //If the square is in the available moves and isn't already highlighted then add the available class, otherwise remove available tag if it exists
       if (board.availableMoves.includes(square) && !sqEl.classList.contains('available')) {
@@ -558,7 +557,7 @@ function handleSquareClick(evt){
   //Only handle the click if user clicked on an available square and the current turn is not a computer player's turn
   if(clickedEl.classList.contains('available')){
     if ((scorekeeper.turn === 'black' && !blackPlayer.level) || (scorekeeper.turn === 'white' && !whitePlayer.level)){
-      let sqCoords = clickedEl.id.split(',')
+      let sqCoords = clickedEl.id.replace('s','').split('-')
       let r = sqCoords[0]
       let c = sqCoords[1]
       let clickedSquare = board.gameBoard[r][c]
