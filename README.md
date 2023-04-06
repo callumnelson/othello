@@ -38,7 +38,7 @@ Per [Wikipedia](https://en.wikipedia.org/wiki/Minimax), the Minimax algorithm is
 * Path to an endgame where neither player has a valid move [here](https://www.youtube.com/watch?v=B2RKnhTrbTs&ab_channel=BelgianOthelloAssociation). Used to test endgame logic 
 * Comedy and drama masks downloaded from [here](https://pixabay.com/vectors/drama-comedy-and-tragedy-theater-312318/)
 
-### Ice Box ⏭️
+## Next Steps (Ice Box) ⏭️
 
 - [x] Add a computer player that selects a random move
 - [x] Implement minimax algorithm up to three levels of recursion
