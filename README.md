@@ -29,7 +29,7 @@ Per [Wikipedia](https://en.wikipedia.org/wiki/Minimax), the Minimax algorithm is
 2. **Computer II** looks ahead two moves and assumes that the opponent will play its best available move (highest board weight value). The computer then plays the move that maximizes its score while giving its opponent the least valuable. 
 3. **Computer III** looks three moves into the future to maximize both its current move and its next move while minimizing the opponent's move in between. 
 
-## Technologies used 💻
+## Technologies used 💾
 
 * CSS
 * JavaScript
