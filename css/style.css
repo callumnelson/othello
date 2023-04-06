@@ -260,8 +260,7 @@ input[type="range"]:hover {
 }
 
 .available {
-  border: 1px dashed rgb(127, 159, 128);
-  background-color: rgb(54, 71, 55);
+  background-color: rgb(1, 71, 3, 0.15);
 }
 
 .available:hover {
