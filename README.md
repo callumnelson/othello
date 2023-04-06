@@ -1,4 +1,4 @@
-# Shakespearean Othello ([play here](https://shakespearean-othello.netlify.app/))
+# Shakespearean Othello ([play here](https://shakespearean-othello.netlify.app/){:target="_blank"})
 
 An Elizabethan-era spin on the classic board game, Othello. 
 
