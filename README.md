@@ -12,8 +12,8 @@ The rules are simple:
 1. If a player cannot play, their turn will be skipped. 
 2. If a player can play, they must play, and may not choose to skip their turn. 
 3. The game ends in one of two scenarios: 
-  * The board is full and there are no more available squares
-  * Neither player has a valid move to make
+    - The board is full and there are no more available squares
+    - Neither player has a valid move to make
 4. At that point, the player with the most pieces of their color wins. It is possible to tie. 
 
 The computer player utilizes a minimax algorithm (see more below) with up to three levels of recursion to determine the best move available to it. Only the bravest users should challenge her!
@@ -43,8 +43,8 @@ Per [Wikipedia](https://en.wikipedia.org/wiki/Minimax), the Minimax algorithm is
 * Minimax algorithm explanation and pseudocode from Amina A. Aljubran [here](http://cs.indstate.edu/~aaljubran/paper.pdf)
 * Recommended minimax board weights from [Washington University](https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/O-Thell-Us/Othellus.pdf)
 * For testing endgame logic:
-  * Fastest path to an endgame with all black pieces [here](https://www.youtube.com/watch?v=6ehiWOSp_wk&ab_channel=SAWADYYY)
-  * Path to an endgame where neither player has a valid move [here](https://www.youtube.com/watch?v=B2RKnhTrbTs&ab_channel=BelgianOthelloAssociation)
+    - Fastest path to an endgame with all black pieces [here](https://www.youtube.com/watch?v=6ehiWOSp_wk&ab_channel=SAWADYYY)
+    - Path to an endgame where neither player has a valid move [here](https://www.youtube.com/watch?v=B2RKnhTrbTs&ab_channel=BelgianOthelloAssociation)
 * Comedy and drama masks downloaded from [here](https://pixabay.com/vectors/drama-comedy-and-tragedy-theater-312318/)
 
 ## Next Steps (Ice Box) ⏭️
