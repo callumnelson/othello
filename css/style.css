@@ -343,6 +343,7 @@ input[type='radio'] {
 
 input[type=range] {
   height: 24px;
+  appearance: none;
   -webkit-appearance: none;
   margin: 10px 0;
   width: 100%;
