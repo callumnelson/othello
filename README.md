@@ -4,6 +4,8 @@ An Elizabethan-era spin on the classic board game, Othello.
 
 ![Game screenshot](https://github.com/callumnelson/othello/blob/main/assets/images/screenshot.png)
 
+## How to play 🂠
+
 Black always moves first. A move consists of placing a piece on one of the available squares, which are highlighted on the board at the start of each turn. A valid move is one that creates a "sandwich" by outflanking one or more of the opponent's pieces in one or more directions. After a piece is placed, the browser handles re-rendering the board to change the color of the "captured" pieces. 
 
 The rules are simple:
