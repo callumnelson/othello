@@ -474,12 +474,11 @@ function renderBoard() {
 function renderMessage(){
   messageEl.textContent = scorekeeper.statusMessage
   turnPieceEls.forEach( el => {
-    el.classList.remove('black', 'white')
+    el.classList.remove('black', 'white', 'tie')
     if(scorekeeper.gameOver){
       if (scorekeeper.blackScore === scorekeeper.whiteScore){
         //Set gradient to message pieces in case of tie
-        el.setAttribute('style', `background: rgb(0,0,0);
-        background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(135,135,135,1) 30%, rgba(255,255,255,1) 100%);`)
+        el.classList.add('tie')
       } else {
         //Otherwise set message pieces to color of winner
         scorekeeper.blackScore > scorekeeper.whiteScore ? el.classList.add('black') : el.classList.add('white')
