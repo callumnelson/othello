@@ -2,7 +2,7 @@
 
 An Elizabethan-era spin on the classic board game, Othello. 
 
-![Game screenshot](https://github.com/callumnelson/othello/blob/main/assets/images/screenshot.png)
+![Game screenshot](https://github.com/callumnelson/othello/blob/main/assets/images/screenshot-2.png)
 
 ## How to play 🂠
 
