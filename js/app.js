@@ -320,15 +320,15 @@ class Player {
       //If the current player wins: Return high value move
       sCopy.updateScore(bCopy.gameBoard)
       if ((sCopy.blackScore > sCopy.whiteScore && turn === 'black') || (sCopy.blackScore < sCopy.whiteScore && turn === 'white')){
-        return 99999
+        return {value: 99999}
       }
       //Else if the game is over and the current player loses return the lowest value move
       if ((sCopy.blackScore < sCopy.whiteScore && turn === 'black') || (sCopy.blackScore > sCopy.whiteScore && turn === 'white')){
-        return -99999
+        return {value: -99999}
       }
       //Else if the game is over and it is a tie return a neutral move
       if (sCopy.blackScore === sCopy.whiteScore){
-        return 0
+        return {value: 0}
       }
     }
     //Get the valid moves for the current player
@@ -337,7 +337,7 @@ class Player {
     if (!bCopy.availableMoves.length){
       //If we're at base case, return low value
       if (depth === 1){
-        return -99999
+        return {value: -99999}
       //Otherwise, switch turns and call recursively from opponent's perspective
       }else {
         sCopy.switchTurn()
@@ -375,11 +375,7 @@ class Player {
         //See if the currMove's value is better than the previous best Move's value
         if (bestMove.value <= currMove.value) {
           bestMove = currMove
-        //If best move is still undefined, set it to currMove to avoid infite endgame loop
-        } else if (bestMove.r === undefined){
-          bestMove.r = currMove.r
-          bestMove.c = currMove.c
-        }
+        } 
       })
       return bestMove
     }
